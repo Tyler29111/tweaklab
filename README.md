@@ -1,5 +1,4 @@
-[index.html](https://github.com/user-attachments/files/32346054/index.html)
-# tweaklab[script.js](https://github.com/user-attachments/files/32346062/script.js)[style.css](https://github.com/user-attachments/files/32346066/style.css)[README.md](https://github.com/user-attachments/files/32346072/README.md)# TweakLab
+# TweakLab
 
 Verkaufsseite für PC-Optimierungs-Dienstleistungen. Statische Webseite — kein Build,
 keine Abhängigkeiten, läuft per Doppelklick auf `index.html`.
@@ -22,12 +21,10 @@ keine Abhängigkeiten, läuft per Doppelklick auf `index.html`.
 
 ## Noch zu ersetzen
 
-Die Platzhalter sind oben in `index.html` als Kommentar dokumentiert:
+1. **Markenname** — „TweakLab" in Navbar, Footer und `<title>`
+2. **Impressum / Datenschutz** — die Footer-Links zeigen aktuell ins Leere
 
-1. **PayPal-Links** — `https://paypal.me/DEINNAME/20EUR` (bzw. `/15EUR`, `/30EUR`), 4 Stellen
-2. **Kontakt** — `kontakt@deine-domain.de` und `Discord: DeinName#0000`
-3. **Markenname** — „TweakLab" in Navbar, Footer und `<title>`
-4. **Impressum / Datenschutz** — die Footer-Links zeigen aktuell ins Leere
+Erledigt: PayPal-Links (`Tyler971377`), Kontakt (Discord `tyler061312`).
 
 > Bei gewerblicher Nutzung sind ein Impressum und eine Datenschutzerklärung Pflicht.
 
