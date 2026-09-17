@@ -1,4 +1,4 @@
-# TweakLab
+# Tyler Tweaks
 
 Verkaufsseite für PC-Optimierungs-Dienstleistungen. Statische Webseite — kein Build,
 keine Abhängigkeiten, läuft per Doppelklick auf `index.html`.
@@ -19,14 +19,20 @@ keine Abhängigkeiten, läuft per Doppelklick auf `index.html`.
 | `style.css` | Dark-Gaming-Theme, responsive |
 | `script.js` | Scroll-Reveal, FAQ-Akkordeon, Navbar |
 
-## Noch zu ersetzen
+## Kontakt & Zahlung
 
-1. **Markenname** — „TweakLab" in Navbar, Footer und `<title>`
-2. **Impressum / Datenschutz** — die Footer-Links zeigen aktuell ins Leere
+- PayPal: `paypal.me/Tyler971377`
+- Discord: `tyler061312`
 
-Erledigt: PayPal-Links (`Tyler971377`), Kontakt (Discord `tyler061312`).
+## Offen
 
-> Bei gewerblicher Nutzung sind ein Impressum und eine Datenschutzerklärung Pflicht.
+Impressum und Datenschutzerklärung fehlen bewusst — es gibt auch keine Links
+darauf. Sobald das Angebot gewerblich läuft, sind beide in Deutschland und
+Österreich Pflicht.
+
+## Live
+
+https://tylertweaks.github.io/
 
 ## Lokal ansehen
 
