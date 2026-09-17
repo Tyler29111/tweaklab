@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TweakLab — PC Optimierung & Tweak App</title>
+<meta name="description" content="Professionelle PC-Optimierung für Gaming: mehr FPS, weniger Input-Lag. Premium Optimierung, Tweak App oder beides im Bundle.">
+
+<!--
+  ====================================================================
+  PLATZHALTER — DIESE STELLEN MUSST DU NOCH ERSETZEN:
+
+  1. PayPal-Links (3x weiter unten im Preise-Abschnitt):
+       https://paypal.me/DEINNAME/20EUR
+       https://paypal.me/DEINNAME/15EUR
+       https://paypal.me/DEINNAME/30EUR
+     -> "DEINNAME" durch deinen PayPal.me-Benutzernamen ersetzen.
+
+  2. Kontakt (im Footer und im Ablauf-Abschnitt):
+       kontakt@deine-domain.de
+       Discord: DeinName#0000
+
+  3. Markenname "TweakLab" (Navbar, Footer, <title> oben)
+
+  4. Impressum: Link im Footer auf deine echte Impressumsseite setzen.
+  ====================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      <span>Tweak<strong>Lab</strong></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#preise">Preise</a>
+      <a href="#ablauf">Ablauf</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#preise" class="btn btn-primary btn-sm">Jetzt kaufen</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <span class="pill">PC-Tweaking für Gamer</span>
+    <h1>Mehr FPS.<br><span class="grad">Weniger Input-Lag.</span></h1>
+    <p class="lead">
+      Dein Windows läuft ab Werk nie optimal. Ich hole aus deiner vorhandenen Hardware
+      heraus, was drin ist — sauber, nachvollziehbar und jederzeit rückgängig zu machen.
+    </p>
+    <div class="hero-cta">
+      <a href="#preise" class="btn btn-primary">Pakete ansehen</a>
+      <a href="#leistungen" class="btn btn-ghost">Was wird gemacht?</a>
+    </div>
+    <ul class="stats">
+      <li><strong>Spürbar</strong><span>höhere &amp; stabilere FPS</span></li>
+      <li><strong>Niedrigere</strong><span>Latenz &amp; Input-Delay</span></li>
+      <li><strong>100 %</strong><span>reversibel — Backup inklusive</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ LEISTUNGEN ============ -->
+<section id="leistungen" class="section reveal">
+  <div class="wrap">
+    <span class="eyebrow">Leistungen</span>
+    <h2>Was beim Tweaking passiert</h2>
+    <p class="sub">Jeder Schritt wird erklärt und dokumentiert — du weißt am Ende genau, was an deinem System geändert wurde.</p>
+
+    <div class="grid-3">
+      <article class="card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l3 1 3-1 3 1 3-1 3 1 3-1v12l-3 1-3-1-3 1-3-1-3 1-3-1z"/></svg>
+        </div>
+        <h3>Windows-Debloat</h3>
+        <p>Überflüssige Dienste, Telemetrie und vorinstallierte Apps raus. Weniger Hintergrundlast, mehr Ressourcen fürs Spiel.</p>
+      </article>
+
+      <article class="card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M8 1v3M16 1v3M8 20v3M16 20v3M1 8h3M1 16h3M20 8h3M20 16h3"/></svg>
+        </div>
+        <h3>GPU &amp; Treiber</h3>
+        <p>Saubere Treiberinstallation, korrekte Systemsteuerungs-Profile, Shader-Cache und die Settings, die wirklich etwas bringen.</p>
+      </article>
+
+      <article class="card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        </div>
+        <h3>Netzwerk &amp; Latenz</h3>
+        <p>Nagle, Throttling, DNS und Adapter-Einstellungen richtig gesetzt — für stabilere Ping-Werte und weniger Spikes.</p>
+      </article>
+
+      <article class="card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="5"/><line x1="12" y1="6" x2="12" y2="10"/></svg>
+        </div>
+        <h3>Maus &amp; Input</h3>
+        <p>Beschleunigung raus, Polling-Rate, Sensitivity-Kette und USB-Power-Management — damit dein Aim genau das macht, was du willst.</p>
+      </article>
+
+      <article class="card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+        </div>
+        <h3>Power-Plan &amp; CPU</h3>
+        <p>Energieprofil, Core-Parking, C-States und Timer-Einstellungen so gesetzt, dass deine CPU nicht mitten im Fight runtertaktet.</p>
+      </article>
+
+      <article class="card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6m0 0 3-3m-3 3L9 5"/><rect x="3" y="10" width="18" height="11" rx="2"/><line x1="7" y1="15" x2="7" y2="15.01"/><line x1="11" y1="15" x2="17" y2="15"/></svg>
+        </div>
+        <h3>Autostart &amp; Speicher</h3>
+        <p>Startprogramme ausmisten, Scheduled Tasks prüfen, RAM- und Datenträger-Einstellungen aufräumen. Schnellerer Boot, weniger Ruckler.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREISE ============ -->
+<section id="preise" class="section section-alt reveal">
+  <div class="wrap">
+    <span class="eyebrow">Preise</span>
+    <h2>Das kannst du kaufen</h2>
+    <p class="sub">Einmalzahlung, keine Abos, keine versteckten Kosten.</p>
+
+    <div class="pricing">
+
+      <!-- Paket 1 -->
+      <article class="plan">
+        <header>
+          <h3>Premium Optimierung</h3>
+          <p class="plan-desc">Ich optimiere deinen PC persönlich per Remote-Sitzung.</p>
+        </header>
+        <div class="price"><span class="amount">20</span><span class="cur">€</span><span class="once">einmalig</span></div>
+        <ul class="features">
+          <li>Komplette manuelle Optimierung</li>
+          <li>Windows-Debloat &amp; Dienste</li>
+          <li>GPU-, Netzwerk- &amp; Input-Tweaks</li>
+          <li>Power-Plan &amp; Autostart</li>
+          <li>Backup vor jeder Änderung</li>
+          <li>Vorher/Nachher-Benchmark</li>
+        </ul>
+        <!-- PLATZHALTER: PayPal-Link ersetzen -->
+        <a class="btn btn-outline btn-block" href="https://paypal.me/DEINNAME/20EUR" target="_blank" rel="noopener">Für 20 € kaufen</a>
+      </article>
+
+      <!-- Paket 3 (Bundle) — in der Mitte, hervorgehoben -->
+      <article class="plan plan-featured">
+        <span class="badge">Beliebteste Wahl</span>
+        <header>
+          <h3>Alles zusammen</h3>
+          <p class="plan-desc">Premium Optimierung <em>und</em> die Tweak App im Bundle.</p>
+        </header>
+        <div class="price">
+          <span class="old">35 €</span>
+          <span class="amount">30</span><span class="cur">€</span><span class="once">einmalig</span>
+        </div>
+        <p class="save">Du sparst 5 €</p>
+        <ul class="features">
+          <li>Alles aus der Premium Optimierung</li>
+          <li>Alles aus der Tweak App</li>
+          <li>Persönliche Einweisung in die App</li>
+          <li>Individuelles Profil für dein System</li>
+          <li>Priorisierter Support</li>
+          <li>Kostenlose Updates der App</li>
+        </ul>
+        <!-- PLATZHALTER: PayPal-Link ersetzen -->
+        <a class="btn btn-primary btn-block" href="https://paypal.me/DEINNAME/30EUR" target="_blank" rel="noopener">Für 30 € kaufen</a>
+      </article>
+
+      <!-- Paket 2 -->
+      <article class="plan">
+        <header>
+          <h3>Tweak App</h3>
+          <p class="plan-desc">Das Tool, mit dem du selbst tweakst — so oft du willst.</p>
+        </header>
+        <div class="price"><span class="amount">15</span><span class="cur">€</span><span class="once">einmalig</span></div>
+        <ul class="features">
+          <li>Alle Tweaks per Klick</li>
+          <li>Profile: Gaming / Standard / Silent</li>
+          <li>Ein-Klick-Wiederherstellung</li>
+          <li>Autostart-Manager</li>
+          <li>Lebenslange Lizenz</li>
+          <li>Updates inklusive</li>
+        </ul>
+        <!-- PLATZHALTER: PayPal-Link ersetzen -->
+        <a class="btn btn-outline btn-block" href="https://paypal.me/DEINNAME/15EUR" target="_blank" rel="noopener">Für 15 € kaufen</a>
+      </article>
+
+    </div>
+
+    <p class="note">Zahlung über PayPal. Nach dem Kauf meldest du dich bitte kurz mit deinem PayPal-Namen bei mir — dann geht's los.</p>
+  </div>
+</section>
+
+<!-- ============ ABLAUF ============ -->
+<section id="ablauf" class="section reveal">
+  <div class="wrap">
+    <span class="eyebrow">Ablauf</span>
+    <h2>In drei Schritten fertig</h2>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Paket wählen &amp; zahlen</h3>
+        <p>Du klickst auf das gewünschte Paket und bezahlst per PayPal. Dauert keine Minute.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Kurz melden</h3>
+        <!-- PLATZHALTER: Kontaktdaten ersetzen -->
+        <p>Schreib mir per Discord (<strong>DeinName#0000</strong>) oder Mail an <strong>kontakt@deine-domain.de</strong> — mit deinem PayPal-Namen.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Optimierung / Download</h3>
+        <p>Wir machen einen Termin für die Remote-Optimierung, bzw. du bekommst die App samt Lizenz direkt zugeschickt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="section section-alt reveal">
+  <div class="wrap wrap-narrow">
+    <span class="eyebrow">FAQ</span>
+    <h2>Häufige Fragen</h2>
+
+    <div class="faq">
+      <details>
+        <summary>Ist das sicher für meinen PC?</summary>
+        <p>Ja. Es werden ausschließlich dokumentierte Windows- und Treibereinstellungen geändert — kein Übertakten, keine Spannungsänderungen, keine dubiosen Fremdprogramme. Vor jeder Änderung wird ein Wiederherstellungspunkt bzw. ein Registry-Backup angelegt.</p>
+      </details>
+      <details>
+        <summary>Verliere ich meine Garantie?</summary>
+        <p>Nein. Es werden keine Hardware-Einstellungen manipuliert und nichts am Gerät geöffnet — reine Software-Konfiguration.</p>
+      </details>
+      <details>
+        <summary>Kann ich alles rückgängig machen?</summary>
+        <p>Ja. Jede Änderung ist reversibel. Du bekommst das Backup und bei der Tweak App zusätzlich eine Ein-Klick-Wiederherstellung auf den Ausgangszustand.</p>
+      </details>
+      <details>
+        <summary>Wie lange dauert die Optimierung?</summary>
+        <p>Je nach System meist 45 bis 90 Minuten. Die Tweak App bekommst du sofort nach der Zahlung.</p>
+      </details>
+      <details>
+        <summary>Welche Systeme werden unterstützt?</summary>
+        <p>Windows 10 und Windows 11 (64-Bit), egal ob AMD oder Intel, NVIDIA oder Radeon. Für Laptops gelten je nach Hersteller ein paar Einschränkungen — frag im Zweifel einfach vorher nach.</p>
+      </details>
+      <details>
+        <summary>Wie viele FPS bekomme ich mehr?</summary>
+        <p>Das hängt komplett von deiner Hardware und deinem Ausgangszustand ab. Ein verwahrlostes System gewinnt deutlich, ein bereits sauberes weniger. Ich verspreche keine konkreten Zahlen — nur eine saubere, messbare Optimierung.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta reveal">
+  <div class="wrap">
+    <h2>Bereit für einen schnelleren PC?</h2>
+    <p class="sub">Starte mit dem Bundle und hol dir beides zum Vorteilspreis.</p>
+    <!-- PLATZHALTER: PayPal-Link ersetzen -->
+    <a class="btn btn-primary btn-lg" href="https://paypal.me/DEINNAME/30EUR" target="_blank" rel="noopener">Alles zusammen für 30 €</a>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div>
+      <a href="#top" class="logo">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Tweak<strong>Lab</strong></span>
+      </a>
+      <p class="muted">PC-Optimierung für Gaming &amp; Alltag.</p>
+    </div>
+    <div>
+      <h4>Kontakt</h4>
+      <!-- PLATZHALTER: Kontaktdaten ersetzen -->
+      <p class="muted">
+        <a href="mailto:kontakt@deine-domain.de">kontakt@deine-domain.de</a><br>
+        Discord: DeinName#0000
+      </p>
+    </div>
+    <div>
+      <h4>Rechtliches</h4>
+      <p class="muted">
+        <a href="#">Impressum</a><br>
+        <a href="#">Datenschutz</a>
+      </p>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="disclaimer">
+      Hinweis: Es wird keine Garantie auf bestimmte FPS-Werte oder Leistungssteigerungen gegeben —
+      die Ergebnisse hängen von deiner Hardware ab. Die Nutzung der Tweak App erfolgt auf eigene Verantwortung.
+      Vor Änderungen wird ein Backup erstellt.
+    </p>
+    <p class="copy">© <span id="year">2026</span> TweakLab. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
