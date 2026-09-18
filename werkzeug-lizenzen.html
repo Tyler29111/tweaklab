@@ -224,6 +224,7 @@
 </main>
 
 <script src="konfig.js"></script>
+<script src="lizenzen.js"></script>
 <script src="lizenz.js"></script>
 <script>
 (function () {
@@ -231,9 +232,10 @@
 
   var L = window.TTLizenz;
 
-  // Lizenzliste mit Zeitstempel nachladen, damit das Nachschlagen nicht
-  // auf einer veralteten Fassung aus dem Browser-Zwischenspeicher arbeitet.
-  (function listeLaden() {
+  // Liste zusaetzlich mit Zeitstempel auffrischen, damit das Nachschlagen
+  // nicht auf einer bis zu zehn Minuten alten Fassung aus dem Browser-
+  // Zwischenspeicher arbeitet. Schlaegt es fehl, gilt die aus dem HTML.
+  (function listeAuffrischen() {
     var s = document.createElement('script');
     s.src = 'lizenzen.js?t=' + Date.now();
     document.head.appendChild(s);

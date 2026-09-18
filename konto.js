@@ -19,15 +19,18 @@
   var knopfAnmelden = formular ? formular.querySelector('button[type="submit"]') : null;
 
   /* ====================================================================
-     Lizenzliste laden — mit Zeitstempel gegen den Zwischenspeicher
+     Lizenzliste auffrischen — mit Zeitstempel gegen den Zwischenspeicher
 
-     GitHub Pages erlaubt Browsern, Dateien bis zu zehn Minuten lang
-     aufzubewahren. Stünde lizenzen.js als <script> im HTML, bekäme ein
-     Kunde womöglich die Liste von vorhin — und sein frisch vergebener
-     Schlüssel würde abgelehnt, obwohl er längst online ist.
-     Der Zeitstempel erzwingt bei jedem Aufruf eine frische Liste.
+     GitHub Pages erlaubt Browsern, Dateien zehn Minuten aufzubewahren.
+     Die Liste aus dem HTML kann also von vorhin stammen, und ein frisch
+     vergebener Schlüssel würde abgelehnt, obwohl er längst online ist.
+     Der Zeitstempel erzwingt eine frische Liste; da lizenzen.js die
+     Variable neu setzt, ersetzt sie die alte vollständig.
+
+     Schlägt das Nachladen fehl, bleibt die Liste aus dem HTML gültig —
+     lieber eine Minute alt als gar keine.
      ==================================================================== */
-  function listeLaden(fertig) {
+  function listeAuffrischen(fertig) {
     var skript = document.createElement('script');
     skript.src = 'lizenzen.js?t=' + Date.now();
     skript.onload  = function () { fertig(true); };
@@ -256,14 +259,16 @@
      Beim Laden: erst die Lizenzliste holen, dann gemerkte Anmeldung prüfen
      ==================================================================== */
   (function start() {
-    // Solange die Liste fehlt, darf niemand anmelden — sonst käme
-    // fälschlich „Schlüssel unbekannt“ heraus.
+    // Während die Liste aufgefrischt wird, kurz nicht anmelden lassen —
+    // sonst prüft jemand gegen den alten Stand.
     if (knopfAnmelden) knopfAnmelden.disabled = true;
 
-    listeLaden(function (geklappt) {
+    listeAuffrischen(function (geklappt) {
       if (knopfAnmelden) knopfAnmelden.disabled = false;
 
-      if (!geklappt) {
+      // Bei Misserfolg gilt die Liste aus dem HTML weiter. Nur wenn es
+      // überhaupt keine gibt, ist wirklich etwas kaputt.
+      if (!geklappt && !window.TT_LIZENZEN) {
         zeigeFehler('Die Lizenzliste konnte nicht geladen werden. Prüfe deine ' +
                     'Internetverbindung und lade die Seite neu.');
         return;

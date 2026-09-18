@@ -227,10 +227,11 @@
 </footer>
 
 <script src="konfig.js"></script>
-<!-- lizenzen.js wird bewusst NICHT hier geladen, sondern in konto.js mit
-     einem Zeitstempel. Sonst liefert der Browser-Zwischenspeicher bis zu
-     10 Minuten lang die alte Liste, und frisch vergebene Schluessel
-     werden abgelehnt, obwohl sie laengst online sind. -->
+<!-- lizenzen.js wird hier als Grundlage geladen und in konto.js noch einmal
+     mit Zeitstempel nachgeholt. Das Nachholen liefert die frische Liste;
+     dieser Eintrag sorgt dafuer, dass auch dann eine Liste da ist, wenn ein
+     Browser voruebergehend eine aeltere konto.js zwischengespeichert hat. -->
+<script src="lizenzen.js"></script>
 <script src="lizenz.js"></script>
 <script src="script.js"></script>
 <script src="konto.js"></script>
