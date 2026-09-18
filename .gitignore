@@ -1,0 +1,11 @@
+# Claude Code / lokale Werkzeuge
+.claude/
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editoren
+.vscode/
+.idea/
+*.swp
