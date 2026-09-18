@@ -25,6 +25,12 @@
 
 window.TT_LIZENZEN = {
 
+  '3dc6abc6c9edfe236e647fd51d08961e7fe564ac3e9f19cce47111f93fdd8a2c': {
+    produkt: 'app',
+    ausgestellt: '18.09.2026',
+    notiz: ''
+  },
+
   '77e50a453a759dcb9aeeff5226bbaed300bcf071151365e7977a4320e974fa17': {
     produkt: 'bundle',
     ausgestellt: '18.09.2026',
