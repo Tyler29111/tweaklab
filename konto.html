@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kundenbereich — Tyler Tweaks</title>
-<meta name="description" content="Melde dich mit deinem Lizenzschlüssel an und lade die Tyler Tweaks App herunter.">
+<title>Mein Konto — Tyler Tweaks</title>
+<meta name="description" content="Dein Tyler-Tweaks-Kundenbereich: Bestellungen, Lizenzschlüssel und Download.">
 <meta name="theme-color" content="#07070c">
 <meta name="robots" content="noindex">
 
@@ -17,8 +17,7 @@
 
 <a href="#inhalt" class="skip-link">Zum Inhalt springen</a>
 
-<!-- ============ NAVIGATION ============ -->
-<header class="nav scrolled" id="nav">
+<header class="nav" id="nav" data-immer="ja">
   <div class="nav-inner">
     <a href="index.html" class="logo">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -28,16 +27,16 @@
     </a>
 
     <nav class="nav-links" id="nav-links" aria-label="Hauptnavigation">
-      <a href="index.html#app">Tweak App</a>
+      <a href="index.html">Home</a>
+      <a href="index.html#app">App</a>
       <a href="index.html#preise">Preise</a>
-      <a href="index.html#ablauf">Kaufablauf</a>
       <a href="index.html#faq">FAQ</a>
-      <a href="konto.html" class="is-active" aria-current="page">Kundenbereich</a>
-      <a href="index.html#preise" class="nav-cta">Jetzt kaufen</a>
+      <a href="admin.html" id="nav-admin" hidden>Admin</a>
+      <span id="nav-auth-mobil"></span>
     </nav>
 
     <div class="nav-actions">
-      <a href="index.html#preise" class="btn btn-primary btn-sm">Jetzt kaufen</a>
+      <span id="nav-auth" class="nav-auth"></span>
       <button class="nav-toggle" id="nav-toggle" type="button"
               aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
         <span></span>
@@ -46,194 +45,186 @@
   </div>
 </header>
 
-<main id="inhalt" class="account">
+<main id="inhalt" class="account konto">
   <div class="wrap">
 
-    <!-- ================= ANMELDUNG ================= -->
-    <div id="ansicht-login">
-      <div class="login-card">
-        <h1>Kundenbereich</h1>
-        <p class="sub">
-          Melde dich mit dem Lizenzschlüssel an, den du nach dem Kauf bekommen hast.
-          Danach siehst du deine Lizenz und den Download.
-        </p>
+    <p class="lade-hinweis" id="laden">Dein Konto wird geladen …</p>
 
-        <div class="form-msg" id="meldung" role="alert"></div>
+    <div id="konto" hidden>
 
-        <form id="login-form" novalidate>
-          <div class="field">
-            <label for="schluessel">Lizenzschlüssel</label>
-            <input type="text" id="schluessel" name="schluessel"
-                   placeholder="TT-XXXX-XXXX-XXXX"
-                   autocomplete="off" autocapitalize="characters"
-                   spellcheck="false" maxlength="32" required>
-            <p class="hint">Groß- und Kleinschreibung sowie Bindestriche sind egal.</p>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-            Anmelden
-          </button>
-        </form>
-
-        <p class="login-foot">
-          Noch keinen Schlüssel? <a href="index.html#preise">Zu den Paketen</a><br>
-          Schlüssel verloren? Schreib mir auf Discord <strong id="discord-1">tyler061312</strong> — ich schicke ihn dir erneut.
-        </p>
-      </div>
-    </div>
-
-    <!-- ================= ANGEMELDET ================= -->
-    <div id="ansicht-konto" hidden>
-
-      <div class="dash-head">
+      <!-- ===== Kopf ===== -->
+      <div class="konto-kopf">
         <div>
-          <h1>Deine Lizenz ist aktiv</h1>
-          <p class="muted">Produkt: <strong id="k-produkt">—</strong></p>
+          <h1>Willkommen zurück, <span id="k-name">…</span></h1>
+          <p class="muted" id="k-email">…</p>
         </div>
-        <button type="button" class="btn btn-ghost btn-sm" id="abmelden">Abmelden</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="abmelden">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+          Abmelden
+        </button>
       </div>
 
-      <div class="dash-grid">
+      <div class="form-msg" id="meldung" role="alert"></div>
 
-        <!-- ---- Linke Spalte ---- -->
-        <div class="dash-col">
+      <!-- ===== Layout ===== -->
+      <div class="konto-layout">
 
-          <!-- Download -->
-          <section class="panel panel-accent" id="panel-download" hidden>
-            <h2>Tweak App herunterladen</h2>
-            <p class="muted" style="font-size:.93rem">
-              Lade die Datei, starte sie und gib beim ersten Start deinen Lizenzschlüssel ein.
-            </p>
+        <nav class="konto-nav" id="konto-nav" aria-label="Kundenbereich">
+          <button type="button" data-ziel="uebersicht" class="an">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            <span>Übersicht</span>
+          </button>
+          <button type="button" data-ziel="bestellungen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Bestellungen</span>
+          </button>
+          <button type="button" data-ziel="produkte">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span>Meine Produkte</span>
+          </button>
+          <button type="button" data-ziel="lizenzen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 8.8-8.8"/><path d="m17 6 2 2"/><path d="m14 9 2 2"/></svg>
+            <span>Meine Lizenzen</span>
+          </button>
+          <button type="button" data-ziel="downloads">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 20h16"/></svg>
+            <span>Downloads</span>
+          </button>
+          <button type="button" data-ziel="kontodaten">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Kontodaten</span>
+          </button>
+        </nav>
 
-            <a class="btn btn-primary btn-block" id="download-link" href="#" style="margin-top:18px">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 20h16"/></svg>
-              <span id="download-text">Setup herunterladen</span>
-            </a>
+        <div class="konto-inhalt">
 
-            <div class="dl-meta">
-              <span>Version <strong data-app-version>2.4.0</strong></span>
-              <span>Stand <strong data-app-date>18.09.2026</strong></span>
-              <span id="dl-groesse">14,2 MB</span>
-              <span>Windows 10 / 11 · 64-Bit</span>
+          <!-- ============ ÜBERSICHT ============ -->
+          <section class="konto-bereich an" id="bereich-uebersicht">
+
+            <div class="hinweis-kasten ok" id="willkommen-neu" hidden>
+              <p><strong>Deine E-Mail-Adresse ist bestätigt.</strong> Dein Konto ist fertig eingerichtet.</p>
             </div>
 
-            <p class="muted" id="dl-pruefsumme" style="font-size:.8rem;margin-top:12px;word-break:break-all" hidden></p>
-          </section>
-
-          <!-- Persönliche Optimierung -->
-          <section class="panel" id="panel-service" hidden>
-            <h2>Termin für deine Optimierung</h2>
-            <p class="muted" style="font-size:.93rem;margin-bottom:18px">
-              Die Optimierung mache ich persönlich per Remote-Sitzung. So geht es weiter:
-            </p>
-            <ol class="steps-mini">
-              <li><strong>Schreib mir auf Discord</strong> (<span class="discord-name">tyler061312</span>) und nenne deinen Lizenzschlüssel.</li>
-              <li><strong>Wir finden einen Termin</strong>, der dir passt — meist noch am selben oder nächsten Tag.</li>
-              <li><strong>Du bekommst eine Vorbereitungsliste</strong>: was du vorher sichern solltest und welches Programm wir für die Fernwartung nutzen.</li>
-              <li><strong>Die Sitzung dauert 45 bis 90 Minuten.</strong> Am Ende bekommst du ein Protokoll aller Änderungen und dein Backup.</li>
-            </ol>
-          </section>
-
-          <!-- Änderungen -->
-          <section class="panel">
-            <h2>Was sich zuletzt geändert hat</h2>
-            <ul class="loglist" id="changelog"></ul>
-          </section>
-
-        </div>
-
-        <!-- ---- Rechte Spalte ---- -->
-        <div class="dash-col">
-
-          <!-- Lizenzdaten -->
-          <section class="panel">
-            <h2>Deine Lizenzdaten</h2>
-
-            <div class="keyline">
-              <span id="k-schluessel">—</span>
-              <button type="button" id="kopieren">Kopieren</button>
+            <div class="hinweis-kasten" id="mail-offen" hidden>
+              <p><strong>Deine E-Mail-Adresse ist noch nicht bestätigt.</strong>
+                 Klick auf den Link in der Bestätigungsmail — erst danach kannst du kaufen.</p>
             </div>
 
-            <ul class="speclist">
-              <li><span class="k">Produkt</span><span class="v" id="k-produkt-2">—</span></li>
-              <li><span class="k">Ausgestellt am</span><span class="v" id="k-datum">—</span></li>
-              <li><span class="k">Laufzeit</span><span class="v">unbegrenzt</span></li>
-              <li><span class="k">Gültig für</span><span class="v">1 PC</span></li>
-              <li><span class="k">Updates</span><span class="v"><span class="tag-ok">inklusive</span></span></li>
-            </ul>
+            <h2 class="bereich-titel">Deine Produkte</h2>
+            <div id="u-produkte" class="produkt-gitter"></div>
+
+            <h2 class="bereich-titel">Letzte Bestellung</h2>
+            <div id="u-bestellung"></div>
           </section>
 
-          <!-- Hilfe -->
-          <section class="panel">
-            <h2>Hilfe &amp; Kontakt</h2>
-            <p class="muted" style="font-size:.93rem">
-              Etwas funktioniert nicht, oder du hast den PC gewechselt?
-              Schreib mir auf Discord <strong class="discord-name">tyler061312</strong>.
-              Der Umzug auf ein anderes Gerät kostet nichts.
+          <!-- ============ BESTELLUNGEN ============ -->
+          <section class="konto-bereich" id="bereich-bestellungen" hidden>
+            <h2 class="bereich-titel">Meine Bestellungen</h2>
+            <div id="b-liste"></div>
+          </section>
+
+          <!-- ============ PRODUKTE ============ -->
+          <section class="konto-bereich" id="bereich-produkte" hidden>
+            <h2 class="bereich-titel">Meine Produkte</h2>
+            <div id="p-liste" class="produkt-gitter"></div>
+          </section>
+
+          <!-- ============ LIZENZEN ============ -->
+          <section class="konto-bereich" id="bereich-lizenzen" hidden>
+            <h2 class="bereich-titel">Meine Lizenzen</h2>
+            <p class="bereich-sub">
+              Diesen Schlüssel gibst du beim ersten Start der Tweak App ein.
+              Er wird dabei an deinen PC gebunden.
             </p>
-            <p class="muted" style="font-size:.93rem">
-              Falls die App nach einem Tweak Probleme macht: In der App unter
-              <strong>Sicherung</strong> liegt für jede Änderung ein Wiederherstellungspunkt.
-            </p>
-            <a href="index.html#faq" class="btn btn-outline btn-block" style="margin-top:6px">Häufige Fragen ansehen</a>
+            <div id="l-liste"></div>
+          </section>
+
+          <!-- ============ DOWNLOADS ============ -->
+          <section class="konto-bereich" id="bereich-downloads" hidden>
+            <h2 class="bereich-titel">Downloads</h2>
+            <div id="d-inhalt"></div>
+
+            <section class="panel" style="margin-top:20px">
+              <h2>Was sich zuletzt geändert hat</h2>
+              <ul class="loglist" id="changelog"></ul>
+            </section>
+          </section>
+
+          <!-- ============ KONTODATEN ============ -->
+          <section class="konto-bereich" id="bereich-kontodaten" hidden>
+            <h2 class="bereich-titel">Kontodaten</h2>
+
+            <section class="panel">
+              <div class="form-msg" id="konto-meldung" role="alert"></div>
+
+              <form id="form-konto" novalidate>
+                <div class="field">
+                  <label for="kd-name">Name</label>
+                  <input type="text" id="kd-name" class="eingabe-text" autocomplete="name" required>
+                </div>
+
+                <div class="field">
+                  <label for="kd-email">E-Mail-Adresse</label>
+                  <input type="email" id="kd-email" class="eingabe-text" disabled>
+                  <p class="hint">
+                    Die Adresse lässt sich hier nicht ändern — sie hängt an deinen
+                    Lizenzen. Schreib mir auf Discord <strong class="discord-name">tyler061312</strong>,
+                    wenn du sie wechseln möchtest.
+                  </p>
+                </div>
+
+                <ul class="speclist" style="margin-bottom:20px">
+                  <li><span class="k">Kunde seit</span><span class="v" id="kd-seit">—</span></li>
+                  <li><span class="k">Bestellungen</span><span class="v" id="kd-bestellungen">—</span></li>
+                  <li><span class="k">Lizenzen</span><span class="v" id="kd-lizenzen">—</span></li>
+                </ul>
+
+                <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+              </form>
+            </section>
+
+            <section class="panel" style="margin-top:20px">
+              <h2>Passwort ändern</h2>
+              <p class="muted" style="font-size:.93rem">
+                Aus Sicherheitsgründen läuft das über einen Link per E-Mail —
+                so kann niemand dein Passwort ändern, der kurz an deinem Rechner sitzt.
+              </p>
+              <button type="button" class="btn btn-outline" id="passwort-aendern">
+                Link zum Ändern anfordern
+              </button>
+            </section>
+
+            <section class="panel" style="margin-top:20px">
+              <h2>Hilfe &amp; Kontakt</h2>
+              <p class="muted" style="font-size:.93rem">
+                Etwas funktioniert nicht, oder du hast den PC gewechselt?
+                Schreib mir auf Discord <strong class="discord-name">tyler061312</strong>.
+                Der Umzug auf ein anderes Gerät kostet nichts.
+              </p>
+              <a href="index.html#faq" class="btn btn-outline">Häufige Fragen ansehen</a>
+            </section>
           </section>
 
         </div>
       </div>
     </div>
-
   </div>
 </main>
 
-<!-- ============ FOOTER ============ -->
 <footer class="footer">
-  <div class="wrap footer-inner">
-    <div>
-      <a href="index.html" class="logo">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-        </svg>
-        <span>Tyler <strong>Tweaks</strong></span>
-      </a>
-      <p class="muted">PC-Optimierung für Gaming und Alltag.</p>
-    </div>
-
-    <div>
-      <h4>Angebot</h4>
-      <ul>
-        <li><a href="index.html#app">Tweak App</a></li>
-        <li><a href="index.html#leistungen">PC-Optimierung</a></li>
-        <li><a href="index.html#preise">Preise</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <h4>Hilfe</h4>
-      <ul>
-        <li><a href="index.html#faq">Häufige Fragen</a></li>
-        <li><a href="index.html#vertrauen">Sicherheit &amp; Backup</a></li>
-      </ul>
-    </div>
-  </div>
-
   <div class="wrap">
-    <p class="disclaimer">
-      Deine Anmeldung wird ausschließlich in deinem Browser gespeichert und nirgendwohin übertragen.
-      Mit „Abmelden“ wird sie wieder gelöscht.
+    <p class="rechtslinks">
+      <a href="impressum.html">Impressum</a>
+      <span aria-hidden="true">&#183;</span>
+      <a href="datenschutz.html">Datenschutz</a>
     </p>
     <p class="copy">© <span id="year">2026</span> Tyler Tweaks</p>
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="konfig.js"></script>
-<!-- lizenzen.js wird hier als Grundlage geladen und in konto.js noch einmal
-     mit Zeitstempel nachgeholt. Das Nachholen liefert die frische Liste;
-     dieser Eintrag sorgt dafuer, dass auch dann eine Liste da ist, wenn ein
-     Browser voruebergehend eine aeltere konto.js zwischengespeichert hat. -->
-<script src="lizenzen.js"></script>
-<script src="lizenz.js"></script>
-<script src="script.js"></script>
+<script src="tt-backend.js"></script>
 <script src="konto.js"></script>
 </body>
 </html>

@@ -1,159 +1,124 @@
-# Tyler Tweaks
+# Tyler Tweaks — Website
 
-Verkaufsseite für die Tweak App und die PC-Optimierung. Statische Webseite —
-kein Build, keine Abhängigkeiten, läuft per Doppelklick auf `index.html`.
+Verkaufsseite und Kundenbereich für die Tweak App und die PC-Optimierung.
+Statische Seite ohne Build-Schritt, läuft auf GitHub Pages.
 
 Live: https://tylertweaks.github.io/
 
+**Einrichtung und alle Zugangsdaten:** siehe `EINRICHTUNG.md` im Ordner
+`E:\Tweak app` (liegt bewusst nicht in diesem öffentlichen Repository).
+
 ## Angebot
 
-| Paket | Preis | Enthält |
-|---|---|---|
-| Tweak App | 15 € | Software, Lizenz für 1 PC |
-| PC-Optimierung | 20 € | Remote-Sitzung, 45–90 Minuten |
-| Bundle | 30 € statt 35 € | beides |
+| Paket | Preis |
+|---|---|
+| Tweak App — 24 Stunden | 2 € |
+| Tweak App — 2 Tage | 3 € |
+| Tweak App — 1 Woche | 5 € |
+| Tweak App — 1 Monat | 8 € |
+| Tweak App — 1 Jahr | 12 € |
+| Tweak App — Lifetime | 15 € |
+| PC-Optimierung | 20 € |
+| Bundle (App Lifetime + Optimierung) | 30 € |
+
+Verbindlich sind immer die Preise in der Supabase-Tabelle `products` — die
+Edge Function rechnet ausschließlich damit. Die Zahlen in `konfig.js` sorgen nur
+dafür, dass die Preisliste sofort etwas anzeigt; weichen sie ab, korrigiert die
+Seite sich beim Laden selbst.
+
+## Wie der Kauf abläuft
+
+```
+Kunde registriert sich          -> Supabase Auth, Bestätigungsmail
+Kunde bestätigt die E-Mail      -> echter Link mit einmaligem Token
+Kunde wählt ein Paket           -> kaufen.html
+Kunde zahlt mit PayPal          -> Edge Function legt die Bestellung mit dem
+                                   Preis aus der Datenbank an
+PayPal bestätigt die Zahlung    -> Edge Function bucht ab und prüft den Betrag
+Backend erzeugt den Schlüssel   -> TWKX-XXXX-XXXX-XXXX, garantiert einmalig
+Lizenz landet im Kundenkonto    -> sofort sichtbar unter "Meine Lizenzen"
+Kunde lädt die App herunter     -> signierter Link, 2 Minuten gültig
+Kunde gibt den Schlüssel ein    -> Tyler.exe prüft ihn gegen Supabase
+```
+
+Der Kunde muss nichts anfordern und niemanden anschreiben.
 
 ## Dateien
 
 | Datei | Zweck |
 |---|---|
-| `index.html` | Startseite: Hero, App-Vorstellung, Preise, Kaufablauf, Sicherheit, FAQ |
-| `konto.html` | Kundenbereich mit Lizenz-Login und Download |
-| `neuer-kunde.ps1` | **Automatik:** Schlüssel erzeugen, eintragen und hochladen |
-| `werkzeug-lizenzen.html` | Werkzeug im Browser: erzeugt nur den Schlüssel |
-| `konfig.js` | **Zentrale Einstellungen** — Preise, PayPal, App-Version, Download |
-| `lizenzen.js` | Liste der ausgegebenen Lizenzen (nur Hashes) |
-| `lizenz.js` | SHA-256 und Lizenzprüfung |
-| `konto.js` | Login-Logik des Kundenbereichs |
-| `script.js` | Navigation, App-Ansichten, FAQ, PayPal-Buttons |
+| `index.html` | Startseite: Hero, App, Optimierung, Preise, Ablauf, Sicherheit, FAQ |
+| `registrieren.html` | Konto anlegen |
+| `anmelden.html` | Login |
+| `passwort-vergessen.html` | Link zum Zurücksetzen anfordern |
+| `passwort-neu.html` | Neues Passwort setzen (Ziel des Links aus der Mail) |
+| `kaufen.html` | Kaufabschluss mit PayPal |
+| `konto.html` | Kundenbereich: Übersicht, Bestellungen, Produkte, Lizenzen, Downloads, Kontodaten |
+| `admin.html` | Verwaltung — nur für Konten mit `is_admin` |
+| `konfig.js` | **Zentrale Einstellungen.** Nur öffentlich unbedenkliche Werte. |
+| `tt-backend.js` | Supabase-Verbindung, Anmeldestatus, Fehlertexte, Formatierung |
+| `auth.js` | Registrierung, Login, Passwort |
+| `kaufen.js` | PayPal-Buttons, ruft die Edge Functions auf |
+| `konto.js` | Kundenbereich |
+| `admin.js` | Verwaltung |
+| `script.js` | Startseite: Navigation, FAQ, App-Ansichten, Laufzeit-Auswahl |
 | `style.css` | Design-System der gesamten Seite |
-| `mockup.css` | Gezeichnete App-Oberfläche und Kaufablauf-Illustrationen |
+| `mockup.css` | Gezeichnete App-Oberfläche und Ablauf-Illustrationen |
 
-Im Normalbetrieb fasst du nur **`konfig.js`** und **`lizenzen.js`** an.
+Im Normalbetrieb fasst du hier **gar nichts** an. Preise änderst du in Supabase
+unter **Table Editor → products**, neue Versionen über die Tabelle
+`app_release`.
 
----
+## Sicherheit
 
-## Neuen Kunden freischalten
+**In diesem Repository darf nichts Geheimes stehen.** Es ist öffentlich.
 
-**Der einfache Weg:** Auf dem Desktop **„Neuer Kunde"** doppelklicken.
+Unbedenklich und deshalb in `konfig.js`:
 
-Das Fenster fragt nach dem Produkt und einer Notiz, erzeugt dann den Schlüssel,
-trägt ihn in `lizenzen.js` ein und lädt alles zu GitHub hoch. Du musst keine
-Datei anfassen. Nach etwa einer Minute kann sich der Kunde anmelden.
+- Supabase Project URL und der **anon**-Key — beide sind dafür gemacht, im
+  Browser zu stehen. Die Zugriffsrechte liegen in der Datenbank (Row Level
+  Security), nicht im Schlüssel.
+- Die PayPal **Client ID**.
 
-Dasselbe von Hand, falls nötig:
+Gehört ausschließlich in die Supabase-Secrets:
 
-```powershell
-.\neuer-kunde.ps1 -Produkt bundle -Notiz "Max von Discord"
-```
+- PayPal **Secret** und **Webhook ID**
+- der **service_role**-Key
+- die Cloudflare-R2-Zugangsdaten
 
-`-Produkt` ist `app`, `optimierung` oder `bundle`. Mit `-NichtHochladen`
-wird nur eingetragen, ohne hochzuladen.
+Was daraus folgt:
 
-**Der Weg über den Browser** (`werkzeug-lizenzen.html`) macht nur den ersten
-Schritt — er erzeugt den Schlüssel, trägt ihn aber **nicht** ein. Dort musst du
-die angezeigte Code-Zeile selbst in `lizenzen.js` einfügen und danach hochladen.
-Ohne diesen zweiten Schritt lehnt der Kundenbereich den Schlüssel ab.
-
-Einen Schlüssel sperrst du, indem du bei seinem Eintrag `gesperrt: true` ergänzt.
-
-**Vor dem Live-Gang:** die drei Testschlüssel oben in `lizenzen.js` löschen
-().
-
----
-
-## PayPal-Buttons aktivieren
-
-Standardmäßig laufen alle Käufe über `paypal.me` — das funktioniert sofort,
-ohne Einrichtung.
-
-Für die offiziellen PayPal-Buttons:
-
-1. Auf developer.paypal.com einloggen → **Apps & Credentials** → **Live**
-2. Die **Client ID** kopieren
-3. In `konfig.js` bei `paypalClientId` eintragen
-
-Danach erscheinen die Buttons automatisch in allen drei Preiskarten, und die
-`paypal.me`-Links rutschen zur Ausweichlösung herunter. Lädt das PayPal-Skript
-nicht (Werbeblocker, Netzwerk), bleibt `paypal.me` sichtbar.
-
-**Wichtig:** Die Zahlungsbestätigung wird im Browser des Käufers abgeholt. Das
-ist nicht fälschungssicher. Kontrolliere jede Zahlung in deinem PayPal-Konto,
-bevor du einen Lizenzschlüssel herausgibst.
-
----
-
-## Neue App-Version veröffentlichen
-
-In `konfig.js` unter `app`:
-
-```js
-app: {
-  version: '2.5.0',
-  datum: '01.11.2026',
-  groesse: '14,8 MB',
-  datei: 'downloads/TylerTweaks-Setup-2.5.0.exe',
-  sha256: ''
-}
-```
-
-Version und Datum erscheinen dadurch automatisch überall auf der Seite —
-im App-Fenster, im Sicherheits-Abschnitt und im Kundenbereich.
-
-Solange `datei` leer ist, steht im Kundenbereich „Download wird gerade
-vorbereitet" statt eines toten Links. Setup-Datei also erst hochladen, dann
-den Pfad eintragen.
-
-Neue Einträge in `changelog` erscheinen im Kundenbereich unter
-„Was sich zuletzt geändert hat".
-
----
-
-## Was der Login leistet — und was nicht
-
-Der Kunde gibt seinen Schlüssel ein, dieser wird mit SHA-256 gehasht und gegen
-die Liste in `lizenzen.js` geprüft. Die Schlüssel selbst stehen nirgends im
-Repository und lassen sich aus den Hashes nicht zurückrechnen.
-
-**Das ist kein Kopierschutz.** GitHub Pages hat keinen Server, die Prüfung läuft
-im Browser des Besuchers. Wer den Quelltext liest, findet die Download-Adresse
-auch ohne gültigen Schlüssel. Der Login sortiert Neugierige aus und gibt Kunden
-eine feste Anlaufstelle — mehr soll er nicht.
-
-Für echten Schutz bräuchtest du einen Server, der den Schlüssel prüft und erst
-dann einen zeitlich begrenzten Download-Link ausgibt (zum Beispiel ein
-Cloudflare Worker oder eine Vercel-Funktion). Die Seite ist so gebaut, dass sich
-das später nachrüsten lässt: nur `lizenz.js` müsste den Server fragen statt der
-lokalen Liste.
-
----
-
-## Offen
-
-**Impressum und Datenschutzerklärung fehlen weiterhin.** Sobald das Angebot
-gewerblich läuft, sind beide in Deutschland und Österreich Pflicht. Die
-Datenschutzerklärung muss unter anderem erwähnen, dass Google Fonts von
-Google-Servern geladen werden und PayPal beim Bezahlen eingebunden wird.
-
-Ebenfalls offen: die Setup-Datei selbst (`konfig.js` → `app.datei`).
-
----
+- Passwörter liegen gehasht bei Supabase Auth und sind für niemanden lesbar.
+- Ein Kunde sieht ausschließlich seine eigenen Bestellungen und Lizenzen — das
+  setzt die Datenbank durch, nicht der Browser.
+- Der Zahlungsstatus kommt von PayPal, serverseitig geprüft. Er lässt sich im
+  Browser nicht setzen.
+- Der Download braucht eine gültige Lizenz und läuft über einen Link, der nach
+  zwei Minuten verfällt.
+- Der Admin-Bereich ist nicht nur ausgeblendet: ohne `is_admin` gibt die
+  Datenbank keine fremden Zeilen heraus.
 
 ## Lokal ansehen
 
-`index.html` im Browser öffnen genügt für einen ersten Blick.
-
-Für den Kundenbereich brauchst du einen lokalen Server, weil der Browser sonst
-die verlinkten Skripte blockiert:
-
-```bash
+```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .claude/server.ps1 -Port 5173
 ```
 
-Danach http://localhost:5173 aufrufen. Der Server braucht weder Node noch
-Python — nur Windows-Bordmittel.
+Danach http://localhost:5173 aufrufen. Ein Doppelklick auf `index.html` reicht
+nicht mehr — die Seite lädt Skripte und spricht mit Supabase, beides braucht
+eine echte Adresse.
 
-## Kontakt & Zahlung
+Damit Anmeldung und Mail-Links lokal funktionieren, muss
+`http://localhost:5173/**` in Supabase unter
+**Authentication → URL Configuration → Redirect URLs** stehen.
 
-- PayPal: `paypal.me/Tyler971377`
+## Offen
+
+**Impressum und Datenschutzerklärung fehlen.** Sobald das Angebot gewerblich
+läuft, sind beide in Deutschland und Österreich Pflicht. Die
+Datenschutzerklärung muss unter anderem Google Fonts, PayPal, Supabase und —
+falls genutzt — Cloudflare R2 nennen.
+
+## Kontakt
+
 - Discord: `tyler061312`

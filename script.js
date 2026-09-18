@@ -1,7 +1,13 @@
 /* ==========================================================================
    Tyler Tweaks — Interaktionen der Startseite
-   Aufbau: Konfiguration einsetzen · Navigation · Mobiles Menü ·
-           Sanftes Scrollen · Reveal · FAQ · App-Ansichten · PayPal
+
+   Aufbau: Navigation · Sanftes Scrollen · Reveal · FAQ · App-Ansichten ·
+           Laufzeit-Auswahl · Preise aus der Datenbank
+
+   Was hier NICHT mehr passiert: Zahlungen. Der frühere PayPal-Block hat die
+   Zahlung im Browser bestätigt und dem Kunden gesagt, er solle sich auf
+   Discord melden. Das war nicht fälschungssicher. Gekauft wird jetzt auf
+   kaufen.html, wo Preis und Zahlungsprüfung auf dem Server liegen.
    ========================================================================== */
 
 (function () {
@@ -10,93 +16,15 @@
   var KONFIG = window.TT_KONFIG || {};
 
   /* ====================================================================
-     1. Werte aus konfig.js ins HTML einsetzen
-     Überall, wo data-app-version oder data-app-date steht, wird der Wert
-     aus der Konfiguration eingetragen. So gibt es nur eine Quelle.
+     1. Grundgerüst: Version, Jahr, Navigation, Anmeldestatus
      ==================================================================== */
-  (function einsetzen() {
-    var app = KONFIG.app || {};
-
-    document.querySelectorAll('[data-app-version]').forEach(function (el) {
-      if (!app.version) return;
-      // In der Fenster-Titelleiste steht ein "v" davor
-      el.textContent = (el.textContent.trim().charAt(0) === 'v' ? 'v' : '') + app.version;
-    });
-
-    document.querySelectorAll('[data-app-date]').forEach(function (el) {
-      if (app.datum) el.textContent = app.datum;
-    });
-
-    // paypal.me-Links aus der Konfiguration aufbauen
-    if (KONFIG.paypalMe) {
-      document.querySelectorAll('[data-paypalme]').forEach(function (el) {
-        var betrag = el.getAttribute('data-paypalme');
-        el.href = KONFIG.paypalMe.replace(/\/+$/, '') + '/' + betrag + 'EUR';
-      });
-    }
-
-    var jahr = document.getElementById('year');
-    if (jahr) jahr.textContent = new Date().getFullYear();
-  })();
+  if (window.TT) {
+    TT.grundgeruest();
+    TT.navAufbauen();
+  }
 
   /* ====================================================================
-     2. Navigation: Hintergrund beim Scrollen
-     ==================================================================== */
-  (function navScroll() {
-    var nav = document.getElementById('nav');
-    if (!nav) return;
-
-    var aktualisieren = function () {
-      nav.classList.toggle('scrolled', window.scrollY > 20);
-    };
-    aktualisieren();
-    window.addEventListener('scroll', aktualisieren, { passive: true });
-  })();
-
-  /* ====================================================================
-     3. Mobiles Menü
-     ==================================================================== */
-  (function mobilesMenue() {
-    var nav = document.getElementById('nav');
-    var knopf = document.getElementById('nav-toggle');
-    if (!nav || !knopf) return;
-
-    var schliessen = function () {
-      nav.classList.remove('open');
-      knopf.setAttribute('aria-expanded', 'false');
-      knopf.setAttribute('aria-label', 'Menü öffnen');
-    };
-
-    knopf.addEventListener('click', function () {
-      var offen = nav.classList.toggle('open');
-      knopf.setAttribute('aria-expanded', offen ? 'true' : 'false');
-      knopf.setAttribute('aria-label', offen ? 'Menü schließen' : 'Menü öffnen');
-    });
-
-    // Nach einem Klick auf einen Link wieder zumachen
-    nav.querySelectorAll('.nav-links a').forEach(function (link) {
-      link.addEventListener('click', schliessen);
-    });
-
-    // Escape schließt ebenfalls
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('open')) {
-        schliessen();
-        knopf.focus();
-      }
-    });
-
-    // Klick außerhalb der Navigation schließt das Menü
-    document.addEventListener('click', function (e) {
-      if (!nav.classList.contains('open')) return;
-      if (!nav.contains(e.target)) schliessen();
-    });
-  })();
-
-  /* ====================================================================
-     4. Sanftes Scrollen zu einer bestimmten Preiskarte
-     Die Hero-Buttons springen nicht nur zum Preisblock, sondern heben
-     die passende Karte kurz hervor.
+     2. Sanftes Scrollen zu einer bestimmten Preiskarte
      ==================================================================== */
   (function scrollZuKarte() {
     document.querySelectorAll('[data-scroll-to]').forEach(function (link) {
@@ -108,8 +36,7 @@
         ziel.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         ziel.classList.remove('flash');
-        // Neustart der Animation erzwingen
-        void ziel.offsetWidth;
+        void ziel.offsetWidth; // Neustart der Animation erzwingen
         ziel.classList.add('flash');
         window.setTimeout(function () { ziel.classList.remove('flash'); }, 1600);
       });
@@ -117,7 +44,7 @@
   })();
 
   /* ====================================================================
-     5. Sektionen beim Hereinscrollen einblenden
+     3. Sektionen beim Hereinscrollen einblenden
      ==================================================================== */
   (function reveal() {
     var elemente = document.querySelectorAll('.reveal');
@@ -140,7 +67,7 @@
   })();
 
   /* ====================================================================
-     6. FAQ: immer nur eine Antwort offen
+     4. FAQ: immer nur eine Antwort offen
      ==================================================================== */
   (function faq() {
     var panels = Array.prototype.slice.call(document.querySelectorAll('.faq details'));
@@ -155,8 +82,7 @@
   })();
 
   /* ====================================================================
-     7. App-Ansichten umschalten (Übersicht / Tweaks / Sicherung)
-     Mit Pfeiltasten bedienbar, wie es für Tabs üblich ist.
+     5. App-Ansichten umschalten (Übersicht / Tweaks / Sicherung)
      ==================================================================== */
   (function ansichten() {
     var leiste = document.querySelector('.shot-tabs');
@@ -195,114 +121,125 @@
   })();
 
   /* ====================================================================
-     8. PayPal-Buttons
-     Nur aktiv, wenn in konfig.js eine Client-ID hinterlegt ist. Ohne ID
-     bleibt alles beim paypal.me-Button — die Seite funktioniert also in
-     jedem Fall.
-
-     Wichtig: Diese Prüfung läuft im Browser. Verlass dich nicht darauf,
-     sondern kontrolliere jede Zahlung in deinem PayPal-Konto, bevor du
-     einen Lizenzschlüssel herausgibst.
+     6. Laufzeit-Auswahl in der Preiskarte
      ==================================================================== */
-  (function paypal() {
-    var slots = document.querySelectorAll('.paypal-slot');
-    if (!slots.length) return;
+  var laufzeiten = (KONFIG.laufzeiten || []).slice();
+  var gewaehlt = 'app-lifetime';
 
-    var clientId = (KONFIG.paypalClientId || '').trim();
-    if (!clientId) return; // Kein Konto hinterlegt -> paypal.me bleibt der Weg
-
-    var skript = document.createElement('script');
-    skript.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(clientId) +
-                 '&currency=' + encodeURIComponent(KONFIG.waehrung || 'EUR') +
-                 '&locale=de_DE&intent=capture';
-    skript.async = true;
-
-    skript.onerror = function () {
-      // SDK nicht erreichbar (Blocker, Netzwerk) — paypal.me bleibt sichtbar
-      console.warn('PayPal-SDK konnte nicht geladen werden. Die paypal.me-Buttons bleiben aktiv.');
-    };
-
-    skript.onload = function () {
-      if (!window.paypal || !window.paypal.Buttons) return;
-
-      slots.forEach(function (slot) {
-        var schluessel = slot.getAttribute('data-paypal');
-        var produkt = (KONFIG.produkte || {})[schluessel];
-        if (!produkt) return;
-
-        window.paypal.Buttons({
-          style: { layout: 'vertical', shape: 'pill', color: 'gold', label: 'paypal', height: 46 },
-
-          createOrder: function (data, actions) {
-            return actions.order.create({
-              purchase_units: [{
-                description: produkt.beschreibung,
-                amount: {
-                  value: produkt.preis,
-                  currency_code: KONFIG.waehrung || 'EUR'
-                }
-              }]
-            });
-          },
-
-          onApprove: function (data, actions) {
-            return actions.order.capture().then(function (details) {
-              bestaetigungZeigen(slot, produkt, details);
-            });
-          },
-
-          onError: function (err) {
-            console.error('PayPal-Fehler:', err);
-            var hinweis = document.createElement('p');
-            hinweis.className = 'plan-alt';
-            hinweis.style.color = '#fca5a5';
-            hinweis.textContent = 'Die Zahlung konnte nicht gestartet werden. Nutze bitte den Button darunter.';
-            slot.appendChild(hinweis);
-          }
-        }).render(slot);
-
-        // Der paypal.me-Button rutscht zur Ausweichlösung herunter
-        var karte = slot.closest('.plan');
-        var alt = karte && karte.querySelector('[data-paypalme]');
-        if (alt) {
-          alt.classList.remove('btn-primary');
-          alt.classList.add('btn-ghost');
-          alt.textContent = 'Stattdessen über paypal.me zahlen';
-        }
-      });
-    };
-
-    document.head.appendChild(skript);
-  })();
-
-  /* Bestätigung nach erfolgreicher Zahlung ------------------------------- */
-  function bestaetigungZeigen(slot, produkt, details) {
-    var karte = slot.closest('.plan');
-    if (!karte) return;
-
-    var name = '';
-    try { name = details.payer.name.given_name || ''; } catch (e) { /* optional */ }
-
-    var id = (details && details.id) ? details.id : '—';
-
-    var box = document.createElement('div');
-    box.className = 'paypal-ok';
-    box.setAttribute('role', 'status');
-    box.innerHTML =
-      '<strong>Zahlung eingegangen. Danke' + (name ? ', ' + escapeHtml(name) : '') + '!</strong>' +
-      '<p>Bestellnummer: <code>' + escapeHtml(id) + '</code></p>' +
-      '<p>Schreib mir jetzt auf Discord <strong>' + escapeHtml(KONFIG.discord || '') + '</strong> ' +
-      'und nenne diese Bestellnummer. Du bekommst dann deinen Lizenzschlüssel für „' +
-      escapeHtml(produkt.name) + '“.</p>';
-
-    karte.querySelector('.plan-buy').replaceChildren(box);
-    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  function preisFormat(wert) {
+    var zahl = Number(wert);
+    if (!isFinite(zahl)) return '—';
+    // Ganze Beträge ohne Nachkommastellen: "15" statt "15,00"
+    return zahl % 1 === 0 ? String(zahl) : zahl.toFixed(2).replace('.', ',');
   }
 
-  function escapeHtml(wert) {
-    return String(wert).replace(/[&<>"']/g, function (z) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[z];
+  function laufzeitZeigen(slug) {
+    var eintrag = laufzeiten.filter(function (l) { return l.slug === slug; })[0];
+    if (!eintrag) return;
+
+    gewaehlt = slug;
+
+    var preisEl = document.getElementById('app-preis');
+    if (preisEl) preisEl.textContent = preisFormat(eintrag.preis);
+
+    var knopf = document.getElementById('app-kaufen');
+    if (knopf) {
+      knopf.href = 'kaufen.html?produkt=' + encodeURIComponent(slug);
+      knopf.textContent = 'Für ' + preisFormat(eintrag.preis) + ' € kaufen';
+    }
+
+    var zeile = document.getElementById('app-lizenz-zeile');
+    if (zeile) {
+      zeile.textContent = slug === 'app-lifetime'
+        ? 'Lebenslange Lizenz für 1 PC'
+        : 'Lizenz für 1 PC · ' + eintrag.lang;
+    }
+
+    document.querySelectorAll('#laufzeit-knoepfe button').forEach(function (b) {
+      var aktiv = b.dataset.slug === slug;
+      b.classList.toggle('an', aktiv);
+      b.setAttribute('aria-pressed', aktiv ? 'true' : 'false');
     });
   }
+
+  var zuhoererGesetzt = false;
+
+  function laufzeitenZeichnen() {
+    var behaelter = document.getElementById('laufzeit-knoepfe');
+    if (!behaelter || !laufzeiten.length) return;
+
+    behaelter.innerHTML = laufzeiten.map(function (l) {
+      return '<button type="button" data-slug="' + l.slug + '" aria-pressed="false">' +
+        '<span class="lz-name">' + l.kurz + '</span>' +
+        '<span class="lz-preis">' + preisFormat(l.preis) + ' €</span>' +
+        '</button>';
+    }).join('');
+
+    // Der Zuhörer hängt am Behälter, nicht an den Knöpfen — er überlebt das
+    // Neuzeichnen und darf deshalb nur einmal gesetzt werden.
+    if (!zuhoererGesetzt) {
+      behaelter.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-slug]');
+        if (b) laufzeitZeigen(b.dataset.slug);
+      });
+      zuhoererGesetzt = true;
+    }
+
+    laufzeitZeigen(gewaehlt);
+  }
+
+  laufzeitenZeichnen();
+
+  /* ====================================================================
+     7. Preise aus der Datenbank bestätigen
+
+     Die Preise im HTML sind nur die schnelle Anzeige. Verbindlich ist, was
+     in der Datenbank steht — und genau das berechnet auch die Edge Function
+     beim Kauf. Weicht etwas ab, korrigiert sich die Seite hier selbst,
+     damit nirgends ein falscher Preis stehen bleibt.
+     ==================================================================== */
+  (async function preiseAbgleichen() {
+    if (!window.TT || !TT.db) return;
+
+    var erg = await TT.db.from('products')
+      .select('slug, price, active')
+      .eq('active', true);
+
+    if (erg.error || !erg.data) return; // Anzeige aus konfig.js bleibt stehen
+
+    var ausDb = {};
+    erg.data.forEach(function (p) { ausDb[p.slug] = p.price; });
+
+    var geaendert = false;
+    laufzeiten.forEach(function (l) {
+      if (ausDb[l.slug] != null && Number(ausDb[l.slug]) !== Number(l.preis)) {
+        l.preis = ausDb[l.slug];
+        geaendert = true;
+      }
+    });
+
+    // Laufzeiten, die es in der Datenbank nicht (mehr) gibt, verschwinden.
+    var vorher = laufzeiten.length;
+    laufzeiten = laufzeiten.filter(function (l) { return ausDb[l.slug] != null; });
+    if (laufzeiten.length !== vorher) geaendert = true;
+
+    if (geaendert) {
+      if (!laufzeiten.some(function (l) { return l.slug === gewaehlt; })) {
+        gewaehlt = laufzeiten.length ? laufzeiten[laufzeiten.length - 1].slug : 'app-lifetime';
+      }
+      laufzeitenZeichnen();
+    }
+
+    // Die beiden festen Karten
+    document.querySelectorAll('[data-preis]').forEach(function (el) {
+      var preis = ausDb[el.dataset.preis];
+      if (preis == null) return;
+      el.textContent = 'Für ' + preisFormat(preis) + ' € kaufen';
+
+      var karte = el.closest('.plan');
+      var betrag = karte && karte.querySelector('.price .amount');
+      if (betrag) betrag.textContent = preisFormat(preis);
+    });
+  })();
 
 })();

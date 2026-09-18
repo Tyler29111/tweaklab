@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verwaltung — Tyler Tweaks</title>
+<meta name="theme-color" content="#07070c">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a href="#inhalt" class="skip-link">Zum Inhalt springen</a>
+
+<header class="nav" id="nav" data-immer="ja">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      <span>Tyler <strong>Tweaks</strong></span>
+    </a>
+
+    <nav class="nav-links" id="nav-links" aria-label="Hauptnavigation">
+      <a href="index.html">Home</a>
+      <a href="konto.html">Mein Konto</a>
+      <a href="admin.html" class="is-active" aria-current="page">Admin</a>
+      <span id="nav-auth-mobil"></span>
+    </nav>
+
+    <div class="nav-actions">
+      <span id="nav-auth" class="nav-auth"></span>
+      <button class="nav-toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="inhalt" class="account konto admin">
+  <div class="wrap">
+
+    <p class="lade-hinweis" id="laden">Verwaltung wird geladen …</p>
+
+    <!-- ===== Kein Zugriff ===== -->
+    <div id="kein-zugriff" hidden>
+      <div class="login-card">
+        <h1>Kein Zugriff</h1>
+        <p class="sub">
+          Dieser Bereich ist der Verwaltung vorbehalten. Mit deinem Konto ist er
+          nicht freigeschaltet.
+        </p>
+        <a href="konto.html" class="btn btn-primary btn-block">Zu meinem Konto</a>
+      </div>
+    </div>
+
+    <!-- ===== Verwaltung ===== -->
+    <div id="admin" hidden>
+
+      <div class="konto-kopf">
+        <div>
+          <h1>Verwaltung</h1>
+          <p class="muted">Angemeldet als <span id="a-email">—</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="neu-laden">Neu laden</button>
+      </div>
+
+      <div class="form-msg" id="meldung" role="alert"></div>
+
+      <!-- Kennzahlen -->
+      <div class="kennzahlen" id="kennzahlen"></div>
+
+      <div class="konto-layout">
+        <nav class="konto-nav" id="admin-nav" aria-label="Verwaltung">
+          <button type="button" data-ziel="bestellungen" class="an"><span>Bestellungen</span></button>
+          <button type="button" data-ziel="lizenzen"><span>Lizenzen</span></button>
+          <button type="button" data-ziel="kunden"><span>Kunden</span></button>
+          <button type="button" data-ziel="zahlungen"><span>Zahlungen</span></button>
+          <button type="button" data-ziel="produkte"><span>Produkte</span></button>
+        </nav>
+
+        <div class="konto-inhalt">
+
+          <section class="konto-bereich an" id="abereich-bestellungen">
+            <div class="bereich-kopf">
+              <h2 class="bereich-titel">Bestellungen</h2>
+              <input type="search" id="suche-bestellungen" class="eingabe-text suchfeld"
+                     placeholder="Nach Name, E-Mail, Produkt, Nummer …">
+            </div>
+            <div class="tabelle-rahmen"><table class="admin-tabelle" id="t-bestellungen"></table></div>
+          </section>
+
+          <section class="konto-bereich" id="abereich-lizenzen" hidden>
+            <div class="bereich-kopf">
+              <h2 class="bereich-titel">Lizenzen</h2>
+              <input type="search" id="suche-lizenzen" class="eingabe-text suchfeld"
+                     placeholder="Nach Key, Kunde, Produkt …">
+            </div>
+            <div class="tabelle-rahmen"><table class="admin-tabelle" id="t-lizenzen"></table></div>
+          </section>
+
+          <section class="konto-bereich" id="abereich-kunden" hidden>
+            <div class="bereich-kopf">
+              <h2 class="bereich-titel">Kunden</h2>
+              <input type="search" id="suche-kunden" class="eingabe-text suchfeld"
+                     placeholder="Nach Name oder E-Mail …">
+            </div>
+            <div class="tabelle-rahmen"><table class="admin-tabelle" id="t-kunden"></table></div>
+          </section>
+
+          <section class="konto-bereich" id="abereich-zahlungen" hidden>
+            <h2 class="bereich-titel">Zahlungen</h2>
+            <p class="bereich-sub">
+              Jede von PayPal bestätigte Meldung, die das System angenommen hat.
+            </p>
+            <div class="tabelle-rahmen"><table class="admin-tabelle" id="t-zahlungen"></table></div>
+          </section>
+
+          <section class="konto-bereich" id="abereich-produkte" hidden>
+            <h2 class="bereich-titel">Produkte</h2>
+            <p class="bereich-sub">
+              Preise und Laufzeiten stehen in der Datenbank. Zum Ändern in Supabase
+              unter <strong>Table Editor → products</strong> bearbeiten — die Website
+              übernimmt es sofort.
+            </p>
+            <div class="tabelle-rahmen"><table class="admin-tabelle" id="t-produkte"></table></div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="rechtslinks">
+      <a href="impressum.html">Impressum</a>
+      <span aria-hidden="true">&#183;</span>
+      <a href="datenschutz.html">Datenschutz</a>
+    </p>
+    <p class="copy">© <span id="year">2026</span> Tyler Tweaks</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="konfig.js"></script>
+<script src="tt-backend.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

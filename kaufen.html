@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaufen — Tyler Tweaks</title>
+<meta name="theme-color" content="#07070c">
+<meta name="robots" content="noindex">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a href="#inhalt" class="skip-link">Zum Inhalt springen</a>
+
+<header class="nav" id="nav" data-immer="ja">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      <span>Tyler <strong>Tweaks</strong></span>
+    </a>
+
+    <nav class="nav-links" id="nav-links" aria-label="Hauptnavigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#app">App</a>
+      <a href="index.html#preise">Preise</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="admin.html" id="nav-admin" hidden>Admin</a>
+      <span id="nav-auth-mobil"></span>
+    </nav>
+
+    <div class="nav-actions">
+      <span id="nav-auth" class="nav-auth"></span>
+      <button class="nav-toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="inhalt" class="account">
+  <div class="wrap wrap-narrow">
+
+    <!-- ===== Laden ===== -->
+    <p class="lade-hinweis" id="laden">Paket wird geladen …</p>
+
+    <!-- ===== Kauf ===== -->
+    <div id="kauf" hidden>
+      <div class="kasse-kopf">
+        <a href="index.html#preise" class="zurueck-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          Andere Laufzeit wählen
+        </a>
+        <h1>Bestellung abschließen</h1>
+      </div>
+
+      <div class="form-msg" id="meldung" role="alert"></div>
+
+      <section class="panel kasse-panel">
+        <div class="kasse-zeile">
+          <div>
+            <h2 id="p-name">—</h2>
+            <p class="muted" id="p-beschreibung"></p>
+          </div>
+          <div class="kasse-preis">
+            <span id="p-preis">—</span>
+            <span class="kasse-einmal">einmalig</span>
+          </div>
+        </div>
+
+        <ul class="speclist kasse-details">
+          <li><span class="k">Laufzeit</span><span class="v" id="p-laufzeit">—</span></li>
+          <li><span class="k">Gültig für</span><span class="v">1 PC</span></li>
+          <li><span class="k">Lizenzschlüssel</span><span class="v" id="p-key">—</span></li>
+          <li><span class="k">Konto</span><span class="v" id="p-konto">—</span></li>
+        </ul>
+      </section>
+
+      <section class="panel panel-accent">
+        <h2>Bezahlen</h2>
+        <p class="muted" style="font-size:.93rem">
+          Die Zahlung läuft über PayPal. Deine Zahlungsdaten bekomme ich nie zu sehen.
+          Sobald PayPal die Zahlung bestätigt, wird dein Lizenzschlüssel automatisch
+          erzeugt und diesem Konto zugeordnet.
+        </p>
+
+        <div id="paypal-knoepfe" style="margin-top:18px"></div>
+
+        <p class="lade-hinweis" id="paypal-laden">PayPal wird geladen …</p>
+
+        <!-- Erscheint nur, wenn PayPal nicht eingerichtet oder nicht erreichbar ist -->
+        <div class="hinweis-kasten warn" id="paypal-fehlt" hidden>
+          <p id="paypal-fehlt-text"></p>
+          <p class="muted">
+            Schreib mir auf Discord <strong class="discord-name">tyler061312</strong> —
+            wir klären den Kauf dann direkt.
+          </p>
+        </div>
+
+        <p class="muted kasse-fuss">
+          Mit dem Kauf erklärst du dich damit einverstanden, dass die Leistung sofort
+          bereitgestellt wird. Bei digitalen Lizenzen erlischt damit das Widerrufsrecht.
+        </p>
+      </section>
+    </div>
+
+    <!-- ===== Nach erfolgreichem Kauf ===== -->
+    <div id="fertig" hidden>
+      <div class="erfolg-kasten gross">
+        <div class="erfolg-symbol gross" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+        </div>
+        <h1>Vielen Dank!</h1>
+        <p id="f-text">Deine Zahlung ist bestätigt.</p>
+
+        <div class="bestell-nr">Bestellung <strong id="f-nummer">—</strong></div>
+      </div>
+
+      <section class="panel panel-accent" id="f-lizenz-panel" hidden>
+        <h2>Dein Lizenzschlüssel</h2>
+        <p class="muted" style="font-size:.93rem">
+          Diesen Schlüssel gibst du beim ersten Start der Tweak App ein.
+          Du findest ihn jederzeit wieder unter „Meine Lizenzen“.
+        </p>
+
+        <div class="keyline" style="margin-top:16px">
+          <span id="f-key">—</span>
+          <button type="button" id="f-kopieren">Kopieren</button>
+        </div>
+      </section>
+
+      <section class="panel" id="f-service-panel" hidden>
+        <h2>So geht es weiter</h2>
+        <p class="muted" style="font-size:.93rem">
+          Für die persönliche Optimierung machen wir einen Termin aus. Schreib mir
+          auf Discord <strong class="discord-name">tyler061312</strong> und nenne
+          deine Bestellnummer — meist finden wir noch am selben oder nächsten Tag
+          einen Termin.
+        </p>
+      </section>
+
+      <div class="fertig-aktionen">
+        <a href="konto.html" class="btn btn-primary">Zum Kundenbereich</a>
+        <a href="index.html#preise" class="btn btn-ghost">Weiteres Paket ansehen</a>
+      </div>
+    </div>
+
+    <!-- ===== Produkt gibt es nicht ===== -->
+    <div id="unbekannt" hidden>
+      <div class="login-card">
+        <h1>Paket nicht gefunden</h1>
+        <p class="sub">Dieses Paket gibt es nicht (mehr). Sieh dir die aktuellen Pakete an.</p>
+        <a href="index.html#preise" class="btn btn-primary btn-block">Zu den Paketen</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="rechtslinks">
+      <a href="impressum.html">Impressum</a>
+      <span aria-hidden="true">&#183;</span>
+      <a href="datenschutz.html">Datenschutz</a>
+    </p>
+    <p class="copy">© <span id="year">2026</span> Tyler Tweaks</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="konfig.js"></script>
+<script src="tt-backend.js"></script>
+<script src="kaufen.js"></script>
+</body>
+</html>

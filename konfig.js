@@ -1,7 +1,17 @@
 /* ==========================================================================
    Tyler Tweaks — zentrale Einstellungen
-   Diese Datei ist die einzige, die du im Normalbetrieb anfassen musst.
-   Sie wird von index.html und konto.html geladen.
+
+   Diese Datei liegt öffentlich im Repository. Es darf hier deshalb NICHTS
+   stehen, was geheim bleiben muss:
+
+     KEIN PayPal Secret        -> Supabase, Edge Functions, Secrets
+     KEIN service_role Key     -> Supabase, Edge Functions, Secrets
+     KEINE Datenbankpasswörter -> gar nicht nötig
+
+   Was hier steht, ist alles öffentlich unbedenklich. Der Supabase-anon-Key
+   und die PayPal-Client-ID sind dafür gemacht, im Browser zu stehen: allein
+   damit kommt man an keine fremden Daten. Die Zugriffsrechte liegen in der
+   Datenbank (Row Level Security), nicht im Schlüssel.
    ========================================================================== */
 
 window.TT_KONFIG = {
@@ -9,70 +19,62 @@ window.TT_KONFIG = {
   /* ---- Kontakt ---------------------------------------------------------- */
   discord: 'tyler061312',
 
-  /* ---- PayPal ----------------------------------------------------------- */
+  /* ---- Supabase ---------------------------------------------------------
+     Zu finden im Supabase-Dashboard unter
+     Project Settings -> API -> Project URL / Publishable (anon) key.
+     ----------------------------------------------------------------------- */
+  supabaseUrl: 'https://dfypxfkqastndvblfvvl.supabase.co',
+  supabaseAnonKey: 'sb_publishable_xXO2n-NPKwMaCulDWN6R7A_BOLcNvUV',
 
-  // Rückfallebene: funktioniert immer, ohne Konfiguration.
-  paypalMe: 'https://paypal.me/Tyler971377',
+  /* ---- PayPal -----------------------------------------------------------
+     Nur die Client-ID! Das dazugehörige Secret gehört ausschließlich in die
+     Supabase-Secrets (siehe EINRICHTUNG.md, Schritt 4).
 
-  // Echte PayPal-Buttons: Client-ID aus deinem PayPal-Entwicklerkonto
-  // (developer.paypal.com -> Apps & Credentials -> Live -> Client ID).
-  // Solange dieses Feld leer ist, erscheinen nur die paypal.me-Buttons.
+     Solange dieses Feld leer ist, zeigt die Kaufseite einen deutlichen
+     Hinweis statt eines Buttons, der nicht funktioniert.
+     ----------------------------------------------------------------------- */
   paypalClientId: '',
+
+  // 'sandbox' zum Testen mit PayPal-Testkonten, 'live' für echtes Geld.
+  // Muss zu PAYPAL_ENV in den Supabase-Secrets passen.
+  paypalUmgebung: 'sandbox',
 
   waehrung: 'EUR',
 
-  /* ---- Produkte ---------------------------------------------------------
-     Der Schlüssel (app / optimierung / bundle) taucht an drei Stellen auf:
-     - in index.html als data-paypal="..."
-     - in lizenzen.js als "produkt"
-     - hier
+  /* ---- Adresse der Seite ------------------------------------------------
+     Wird für die Links in den Bestätigungs-Mails gebraucht. Beim Wechsel auf
+     eine eigene Domain hier und in den Supabase-Einstellungen ändern.
      ----------------------------------------------------------------------- */
-  produkte: {
-    app: {
-      name: 'Tweak App',
-      preis: '15.00',
-      beschreibung: 'Tyler Tweaks — Tweak App, Lizenz für 1 PC',
-      download: true,
-      service: false
-    },
-    optimierung: {
-      name: 'PC-Optimierung',
-      preis: '20.00',
-      beschreibung: 'Tyler Tweaks — persönliche PC-Optimierung per Remote-Sitzung',
-      download: false,
-      service: true
-    },
-    bundle: {
-      name: 'Bundle',
-      preis: '30.00',
-      beschreibung: 'Tyler Tweaks — Tweak App und PC-Optimierung im Bundle',
-      download: true,
-      service: true
-    }
-  },
+  seitenUrl: 'https://tylertweaks.github.io',
+
+  /* ---- Anzeige der Pakete -----------------------------------------------
+     Verbindlich ist immer der Preis in der Datenbank — die Kaufseite holt ihn
+     dort, und die Edge Function berechnet ausschließlich damit. Die Werte hier
+     sorgen nur dafür, dass die Preisliste sofort etwas anzeigt, statt kurz
+     leer zu bleiben. Weichen sie ab, korrigiert die Seite sich beim Laden
+     selbst aus der Datenbank.
+     ----------------------------------------------------------------------- */
+  laufzeiten: [
+    { slug: 'app-24h',      kurz: '24 Std.',  lang: '24 Stunden', preis: '2.00'  },
+    { slug: 'app-2d',       kurz: '2 Tage',   lang: '2 Tage',     preis: '3.00'  },
+    { slug: 'app-1w',       kurz: '1 Woche',  lang: '1 Woche',    preis: '5.00'  },
+    { slug: 'app-1m',       kurz: '1 Monat',  lang: '1 Monat',    preis: '8.00'  },
+    { slug: 'app-1y',       kurz: '1 Jahr',   lang: '1 Jahr',     preis: '12.00' },
+    { slug: 'app-lifetime', kurz: 'Lifetime', lang: 'Lifetime',   preis: '15.00' }
+  ],
 
   /* ---- Aktuelle App-Version ---------------------------------------------
-     Wird automatisch überall eingesetzt, wo data-app-version bzw.
-     data-app-date im HTML steht. Bei einem Update nur hier ändern.
+     Version und Datum erscheinen überall, wo data-app-version bzw.
+     data-app-date im HTML steht.
+
+     Die Setup-Datei selbst steht NICHT mehr hier. Sie liegt in einem privaten
+     Supabase-Bucket und wird nur nach Lizenzprüfung über einen signierten
+     Link ausgegeben (Edge Function "download"). Größe und Prüfsumme holt der
+     Kundenbereich direkt von dort.
      ----------------------------------------------------------------------- */
   app: {
     version: '2.4.0',
-    datum: '18.09.2026',
-    groesse: '14,2 MB',
-
-    // Pfad oder vollständige URL zur Setup-Datei.
-    // Solange das Feld leer ist, steht im Kundenbereich ehrlich
-    // "Download wird gerade vorbereitet" statt eines toten Links.
-    // Sobald die Datei liegt, hier eintragen, zum Beispiel:
-    //   datei: 'downloads/TylerTweaks-Setup-2.4.0.exe'
-    //
-    // ACHTUNG: Auf GitHub Pages ist jede Datei im Repository öffentlich
-    // erreichbar, auch ohne Login. Wer die URL kennt, kann sie laden.
-    // Für echten Schutz brauchst du einen Server, der den Schlüssel prüft.
-    datei: '',
-
-    // Optionale Prüfsumme, damit Käufer die Datei verifizieren können.
-    sha256: ''
+    datum: '18.09.2026'
   },
 
   /* ---- Änderungen der letzten Versionen ---------------------------------- */

@@ -634,30 +634,6 @@ strong { color: var(--text); font-weight: 600; }
 }
 .plan-alt a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
-/* PayPal-Bereich innerhalb einer Preiskarte */
-.paypal-slot { margin-bottom: 12px; min-height: 0; }
-.paypal-slot:empty { display: none; margin: 0; }
-
-/* Bestätigung nach erfolgreicher PayPal-Zahlung */
-.paypal-ok {
-  padding: 18px 18px;
-  border-radius: var(--radius-sm);
-  background: var(--ok-soft);
-  border: 1px solid rgba(52, 211, 153, .4);
-  font-size: .9rem;
-}
-.paypal-ok strong { display: block; margin-bottom: 8px; color: var(--ok); }
-.paypal-ok p { margin: 0 0 8px; color: var(--text-2); }
-.paypal-ok p:last-child { margin-bottom: 0; }
-.paypal-ok code {
-  padding: 2px 7px;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, .35);
-  font-family: 'Space Grotesk', ui-monospace, monospace;
-  font-size: .86rem;
-  word-break: break-all;
-}
-
 /* Kurzes Hervorheben, wenn ein Hero-Button auf eine Karte springt */
 @keyframes plan-flash {
   0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
@@ -1171,4 +1147,741 @@ strong { color: var(--text); font-weight: 600; }
     transition-duration: .001ms !important;
   }
   .reveal { opacity: 1; transform: none; }
+}
+
+
+/* ==========================================================================
+   18. Konto, Kasse und Verwaltung
+
+   Ergänzt das Design-System oben um alles, was mit Anmeldung, Kundenbereich,
+   Kaufabschluss und Verwaltung zu tun hat. Verwendet ausschließlich die
+   Tokens aus Abschnitt 1 — kein zweites Farbschema.
+   ========================================================================== */
+
+/* ---------- Navigation: Anmeldestatus ---------- */
+.nav-auth { display: inline-flex; align-items: center; gap: 10px; }
+
+.btn-konto {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+.btn-konto:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+.btn-konto svg { width: 16px; height: 16px; }
+
+.nav-links #nav-auth-mobil { display: none; }
+
+/* ---------- Eingabefelder für normalen Text ----------
+   Die Grundregel für .field input ist auf Lizenzschlüssel ausgelegt
+   (monospace, gesperrt). Für Name, E-Mail und Passwort wäre das falsch. */
+.field input.eingabe-text {
+  font-family: var(--font);
+  font-size: 1rem;
+  letter-spacing: normal;
+}
+.field input.eingabe-text::placeholder { letter-spacing: normal; }
+.field input:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  background: var(--surface);
+}
+.field .hint a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+.form-msg.warn {
+  background: rgba(251, 191, 36, .1);
+  border: 1px solid rgba(251, 191, 36, .35);
+  color: var(--warn);
+}
+
+/* ---------- Hinweis- und Erfolgskästen ---------- */
+.hinweis-kasten {
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  font-size: .92rem;
+}
+.hinweis-kasten p { margin: 0 0 10px; }
+.hinweis-kasten p:last-child { margin-bottom: 0; }
+.hinweis-kasten.ok {
+  background: var(--ok-soft);
+  border-color: rgba(52, 211, 153, .35);
+}
+.hinweis-kasten.warn {
+  background: rgba(251, 191, 36, .08);
+  border-color: rgba(251, 191, 36, .35);
+}
+
+.erfolg-kasten { text-align: center; padding: 8px 0 4px; }
+.erfolg-kasten h2 { font-size: 1.35rem; margin-bottom: .4em; }
+.erfolg-kasten p { color: var(--muted); font-size: .94rem; }
+.erfolg-kasten .btn { margin-top: 18px; }
+
+.erfolg-kasten.gross {
+  padding: 40px 24px 32px;
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.erfolg-kasten.gross h1 { font-size: clamp(1.7rem, 4vw, 2.3rem); }
+
+.erfolg-symbol {
+  width: 56px; height: 56px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  border: 1px solid rgba(34, 211, 238, .35);
+  color: var(--accent);
+}
+.erfolg-symbol svg { width: 26px; height: 26px; }
+.erfolg-symbol.gross {
+  width: 72px; height: 72px;
+  background: var(--ok-soft);
+  border-color: rgba(52, 211, 153, .4);
+  color: var(--ok);
+}
+.erfolg-symbol.gross svg { width: 34px; height: 34px; }
+
+.lade-hinweis {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- Statusanzeige ---------- */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.status .punkt {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status-an     { background: var(--ok-soft); color: var(--ok); }
+.status-aus    { background: rgba(255, 255, 255, .05); color: var(--muted); }
+.status-warten { background: rgba(251, 191, 36, .12); color: var(--warn); }
+
+/* ---------- Kundenbereich: Aufbau ---------- */
+.konto { padding-top: 40px; }
+
+.konto-kopf {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.konto-kopf h1 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); margin-bottom: .2em; }
+
+.konto-layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.konto-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  position: sticky;
+  top: 86px;
+}
+.konto-nav button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 13px;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-xs);
+  color: var(--muted);
+  font: inherit;
+  font-size: .93rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: color .16s ease, background .16s ease;
+}
+.konto-nav button svg { width: 17px; height: 17px; flex-shrink: 0; }
+.konto-nav button:hover { color: var(--text); background: rgba(255, 255, 255, .04); }
+.konto-nav button.an {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.konto-inhalt { min-width: 0; }
+.konto-bereich[hidden] { display: none; }
+
+.bereich-titel {
+  font-size: 1.3rem;
+  margin: 0 0 16px;
+}
+.konto-bereich > .bereich-titel:not(:first-child) { margin-top: 36px; }
+.bereich-sub { color: var(--muted); font-size: .93rem; margin: -8px 0 18px; }
+
+.bereich-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.bereich-kopf .bereich-titel { margin: 0; }
+
+/* ---------- Produktkarten ---------- */
+.produkt-gitter {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.produkt-karte,
+.bestell-karte,
+.lizenz-karte {
+  padding: 22px 22px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.bestell-karte + .bestell-karte,
+.lizenz-karte + .lizenz-karte { margin-top: 16px; }
+
+.produkt-kopf,
+.bestell-kopf {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.produkt-kopf h3,
+.bestell-kopf h3 { font-size: 1.08rem; margin: 0; }
+
+.produkt-fuss { margin-top: 18px; }
+
+.bestell-nummer {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--accent);
+  font-family: var(--font-head);
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+
+.bestell-hinweis {
+  margin: 14px 0 0;
+  padding: 11px 14px;
+  background: var(--surface-2);
+  border-radius: var(--radius-xs);
+  color: var(--muted);
+  font-size: .87rem;
+}
+.bestell-hinweis.warn {
+  background: rgba(251, 191, 36, .08);
+  color: var(--warn);
+}
+
+/* ---------- Lizenzkarte ---------- */
+.lizenz-karte.aktiv {
+  border-color: rgba(34, 211, 238, .32);
+  background: linear-gradient(180deg, rgba(34, 211, 238, .05), var(--surface) 55%);
+}
+.lizenz-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.keyline .key-text { font-weight: 600; }
+.keyline .key-kopieren {
+  margin-left: auto;
+  padding: 7px 14px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(34, 211, 238, .35);
+  border-radius: var(--radius-xs);
+  color: var(--accent);
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .16s ease, color .16s ease, border-color .16s ease;
+}
+.keyline .key-kopieren:hover { background: rgba(34, 211, 238, .18); }
+.keyline .key-kopieren.ok {
+  background: var(--ok-soft);
+  border-color: rgba(52, 211, 153, .4);
+  color: var(--ok);
+}
+
+/* ---------- Leerer Bereich ---------- */
+.leer-kasten {
+  padding: 40px 28px;
+  background: var(--surface);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.leer-kasten h3 { font-size: 1.05rem; margin-bottom: .4em; }
+.leer-kasten p { color: var(--muted); font-size: .92rem; margin-bottom: 18px; }
+
+/* ---------- Download ---------- */
+.download-status {
+  margin: 12px 0 0;
+  font-size: .87rem;
+}
+.download-status.ok { color: var(--ok); }
+.download-status.fehler { color: #fca5a5; }
+
+.pruefsumme {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: .78rem;
+  word-break: break-all;
+}
+.pruefsumme code { font-family: 'Space Grotesk', ui-monospace, monospace; }
+
+/* ---------- Laufzeit-Auswahl in der Preiskarte ---------- */
+.laufzeit-wahl {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+.laufzeit-wahl legend {
+  padding: 0;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.laufzeit-knoepfe {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+.laufzeit-knoepfe button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 9px 4px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color .16s ease, color .16s ease, background .16s ease;
+}
+.laufzeit-knoepfe button:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+.laufzeit-knoepfe button.an {
+  background: var(--accent-soft);
+  border-color: rgba(34, 211, 238, .5);
+  color: var(--accent);
+}
+.lz-name  { font-size: .8rem; font-weight: 600; }
+.lz-preis { font-size: .74rem; opacity: .8; }
+
+/* ---------- Kasse ---------- */
+.kasse-kopf { margin-bottom: 24px; }
+.kasse-kopf h1 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); margin: 0; }
+
+.zurueck-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: .89rem;
+  transition: color .16s ease;
+}
+.zurueck-link:hover { color: var(--accent); }
+.zurueck-link svg { width: 15px; height: 15px; }
+
+.kasse-panel { margin-bottom: 20px; }
+
+.kasse-zeile {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.kasse-zeile h2 { font-size: 1.2rem; margin-bottom: .25em; }
+.kasse-zeile p { font-size: .9rem; margin: 0; }
+
+.kasse-preis {
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--font-head);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.1;
+}
+.kasse-einmal {
+  display: block;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: .78rem;
+  font-weight: 500;
+}
+
+.kasse-fuss {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: .8rem;
+}
+
+.bestell-nr {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 8px 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: .9rem;
+}
+
+.fertig-aktionen {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+/* ---------- Verwaltung ---------- */
+.kennzahlen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.kennzahl {
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.kennzahl .wert {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.2;
+}
+.kennzahl .label {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: .8rem;
+}
+
+.suchfeld {
+  min-height: 42px !important;
+  max-width: 340px;
+  font-size: .9rem !important;
+}
+
+.tabelle-rahmen {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+}
+.admin-tabelle th {
+  padding: 13px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+.admin-tabelle td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.admin-tabelle tr:last-child td { border-bottom: 0; }
+.admin-tabelle tr.inaktiv { opacity: .5; }
+.admin-tabelle tr.notiz-zeile td {
+  padding-top: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+.admin-tabelle td.leer {
+  padding: 40px 20px;
+  color: var(--muted);
+  text-align: center;
+}
+.admin-tabelle .mono {
+  font-family: 'Space Grotesk', ui-monospace, monospace;
+  letter-spacing: .02em;
+  /* Ein Lizenzschlüssel darf nicht mitten im Block umbrechen — die Tabelle
+     scrollt stattdessen waagerecht. */
+  white-space: nowrap;
+}
+.admin-tabelle .klein { font-size: .8rem; }
+.zeile-klein { color: var(--muted); font-size: .78rem; }
+
+.admin-tabelle .aktionen {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.admin-tabelle .mini {
+  padding: 5px 11px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xs);
+  color: var(--muted);
+  font: inherit;
+  font-size: .76rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .16s ease, border-color .16s ease;
+}
+.admin-tabelle .mini:hover { color: var(--accent); border-color: var(--accent); }
+.admin-tabelle .mini:disabled { opacity: .5; cursor: wait; }
+
+.merker {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1060px) {
+  .nav-links #nav-auth-mobil { display: block; }
+  .nav-links #nav-auth-mobil a { display: block; }
+}
+
+@media (max-width: 900px) {
+  .konto-layout { grid-template-columns: 1fr; gap: 18px; }
+
+  /* Aus der Seitenleiste wird eine waagerechte Leiste zum Wischen. */
+  .konto-nav {
+    position: static;
+    flex-direction: row;
+    gap: 6px;
+    padding: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .konto-nav::-webkit-scrollbar { display: none; }
+  .konto-nav button {
+    width: auto;
+    flex-shrink: 0;
+    padding: 9px 14px;
+    white-space: nowrap;
+  }
+  .konto-nav button svg { display: none; }
+}
+
+@media (max-width: 680px) {
+  .konto { padding-top: 28px; }
+  .konto-kopf { flex-direction: column; align-items: stretch; }
+  .konto-kopf .btn { align-self: flex-start; }
+
+  .produkt-gitter { grid-template-columns: 1fr; }
+  .produkt-karte, .bestell-karte, .lizenz-karte { padding: 20px 18px; }
+
+  .laufzeit-knoepfe { grid-template-columns: repeat(2, 1fr); }
+
+  .kasse-zeile { flex-direction: column; gap: 12px; }
+  .kasse-preis { text-align: left; }
+  .fertig-aktionen .btn { width: 100%; }
+
+  .erfolg-kasten.gross { padding: 32px 18px 26px; }
+
+  .suchfeld { max-width: none; width: 100%; }
+  .kennzahlen { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kennzahl { padding: 14px 16px; }
+  .kennzahl .wert { font-size: 1.25rem; }
+
+  .admin-tabelle { font-size: .82rem; }
+  .admin-tabelle th, .admin-tabelle td { padding: 10px 11px; }
+
+  /* Der Kopieren-Knopf soll auch schmal gut treffbar bleiben. */
+  .keyline .key-kopieren { margin-left: 0; width: 100%; }
+}
+
+
+/* ==========================================================================
+   19. Impressum und Datenschutzerklärung
+
+   Langer Fließtext, der sich gut lesen lassen muss — deshalb etwas größere
+   Zeilenhöhe und eine schmalere Spalte als im Rest der Seite.
+   ========================================================================== */
+
+.rechtstext {
+  padding: 56px 0 96px;
+  line-height: 1.75;
+}
+
+.rechtstext h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin-bottom: .25em;
+}
+
+.rechtstext .stand {
+  margin: 0 0 36px;
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+.rechtstext h2 {
+  margin: 44px 0 .6em;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 1.22rem;
+}
+.rechtstext h2:first-of-type { border-top: 0; padding-top: 0; }
+
+.rechtstext p { color: var(--text-2); }
+
+.rechtstext ul {
+  margin: 0 0 1em;
+  padding-left: 22px;
+  color: var(--text-2);
+}
+.rechtstext li { margin-bottom: .45em; }
+
+.rechtstext a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.rechtstext code {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-family: 'Space Grotesk', ui-monospace, monospace;
+  font-size: .86em;
+  color: var(--accent);
+}
+
+/* Kleingedruckter Betreiber-Hinweis unter einem Abschnitt */
+.rechtstext .hinweis-klein {
+  margin: -.3em 0 1em;
+  padding-left: 14px;
+  border-left: 2px solid var(--line-strong);
+  color: var(--muted);
+  font-size: .86rem;
+  line-height: 1.6;
+}
+
+/* Deutlich sichtbarer Hinweis, dass noch Platzhalter drinstehen */
+.platzhalter-warnung {
+  margin: 0 0 40px;
+  padding: 20px 22px;
+  background: rgba(251, 191, 36, .08);
+  border: 1px solid rgba(251, 191, 36, .45);
+  border-radius: var(--radius-sm);
+}
+.platzhalter-warnung strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--warn);
+  font-size: 1rem;
+}
+.platzhalter-warnung p {
+  margin: 0;
+  color: var(--text-2);
+  font-size: .92rem;
+}
+
+.rechts-fuss {
+  margin-top: 48px;
+  padding: 24px 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: .92rem;
+}
+.rechts-fuss p { margin-bottom: .8em; }
+.rechts-fuss p:last-child { margin-bottom: 0; }
+
+.rechtstext .zurueck {
+  margin-top: 40px;
+  font-size: .95rem;
+}
+
+/* Rechtslinks im Fußbereich — auf jeder Seite erreichbar, wie vorgeschrieben */
+.rechtslinks {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: .88rem;
+}
+.rechtslinks a {
+  color: var(--muted);
+  transition: color .16s ease;
+}
+.rechtslinks a:hover { color: var(--accent); }
+.rechtslinks a.is-active { color: var(--text); }
+.rechtslinks span { margin: 0 8px; opacity: .5; }
+
+@media (max-width: 680px) {
+  .rechtstext { padding: 36px 0 64px; }
+  .rechtstext h2 { margin-top: 34px; }
+  .platzhalter-warnung, .rechts-fuss { padding: 18px 16px; }
 }

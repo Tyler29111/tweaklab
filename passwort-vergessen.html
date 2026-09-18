@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passwort vergessen — Tyler Tweaks</title>
+<meta name="theme-color" content="#07070c">
+<meta name="robots" content="noindex">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a href="#inhalt" class="skip-link">Zum Inhalt springen</a>
+
+<header class="nav" id="nav" data-immer="ja">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      <span>Tyler <strong>Tweaks</strong></span>
+    </a>
+
+    <nav class="nav-links" id="nav-links" aria-label="Hauptnavigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#app">App</a>
+      <a href="index.html#preise">Preise</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="admin.html" id="nav-admin" hidden>Admin</a>
+      <span id="nav-auth-mobil"></span>
+    </nav>
+
+    <div class="nav-actions">
+      <span id="nav-auth" class="nav-auth"></span>
+      <button class="nav-toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="inhalt" class="account">
+  <div class="wrap">
+    <div class="login-card">
+
+      <h1>Passwort vergessen</h1>
+      <p class="sub">
+        Gib deine E-Mail-Adresse ein. Wir schicken dir einen Link, mit dem du ein
+        neues Passwort setzen kannst.
+      </p>
+
+      <div class="form-msg" id="meldung" role="alert"></div>
+
+      <form id="form-passwort-vergessen" novalidate>
+        <div class="field">
+          <label for="email">E-Mail-Adresse</label>
+          <input type="email" id="email" name="email" class="eingabe-text"
+                 autocomplete="email" placeholder="max@example.com"
+                 spellcheck="false" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Link anfordern</button>
+      </form>
+
+      <div id="nach-anforderung" hidden>
+        <div class="erfolg-kasten">
+          <div class="erfolg-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>
+            </svg>
+          </div>
+          <h2>Mail ist unterwegs</h2>
+          <p>
+            Falls für <strong id="gesendet-an">diese Adresse</strong> ein Konto besteht,
+            liegt der Link gleich im Postfach. Er ist eine Stunde gültig.
+          </p>
+          <p class="muted">Sieh auch im Spam-Ordner nach.</p>
+          <a href="anmelden.html" class="btn btn-outline btn-block">Zurück zur Anmeldung</a>
+        </div>
+      </div>
+
+      <p class="login-foot">
+        Doch wieder eingefallen? <a href="anmelden.html">Zur Anmeldung</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="rechtslinks">
+      <a href="impressum.html">Impressum</a>
+      <span aria-hidden="true">&#183;</span>
+      <a href="datenschutz.html">Datenschutz</a>
+    </p>
+    <p class="copy">© <span id="year">2026</span> Tyler Tweaks</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="konfig.js"></script>
+<script src="tt-backend.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>

@@ -16,13 +16,18 @@
 
 <!--
   ====================================================================
-  Kontakt: Discord tyler061312 | PayPal: paypal.me/Tyler971377
+  Kontakt: Discord tyler061312
+
+  Kauf, Konto und Lizenzen laufen ueber Supabase (siehe EINRICHTUNG.md).
+  Die Zahlung wird serverseitig geprueft, der Lizenzschluessel entsteht
+  automatisch nach bestaetigter Zahlung.
+
+  Einstellungen: konfig.js. Dort stehen nur oeffentlich unbedenkliche
+  Werte. Geheimes (PayPal-Secret, service_role) gehoert ausschliesslich
+  in die Supabase-Secrets.
 
   HINWEIS: Impressum und Datenschutzerklaerung fehlen weiterhin. Sobald
   das Angebot gewerblich laeuft, sind beide in DE/AT Pflicht.
-
-  PayPal-Buttons: Client-ID in konfig.js eintragen, dann erscheinen sie
-  automatisch. Solange sie leer ist, laeuft alles ueber paypal.me.
   ====================================================================
 -->
 
@@ -47,19 +52,18 @@
     </a>
 
     <nav class="nav-links" id="nav-links" aria-label="Hauptnavigation">
-      <a href="#app">Tweak App</a>
+      <a href="#top">Home</a>
+      <a href="#app">App</a>
       <a href="#leistungen">Optimierung</a>
       <a href="#preise">Preise</a>
-      <a href="#ablauf">Kaufablauf</a>
-      <a href="#vertrauen">Sicherheit</a>
       <a href="#faq">FAQ</a>
-      <a href="konto.html" class="nav-only-mobile">Kundenbereich</a>
+      <a href="admin.html" id="nav-admin" hidden>Admin</a>
+      <span id="nav-auth-mobil"></span>
       <a href="#preise" class="nav-cta">Jetzt kaufen</a>
     </nav>
 
     <div class="nav-actions">
-      <a href="konto.html" class="btn btn-ghost btn-sm">Kundenbereich</a>
-      <a href="#preise" class="btn btn-primary btn-sm">Jetzt kaufen</a>
+      <span id="nav-auth" class="nav-auth"></span>
       <button class="nav-toggle" id="nav-toggle" type="button"
               aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
         <span></span>
@@ -98,7 +102,8 @@
     </div>
 
     <p class="hero-meta">
-      Einmalzahlung ab 15 € · Zahlung über PayPal · Lizenz und Download direkt nach der Bestätigung
+      Ab 2 € zum Ausprobieren · Lifetime für 15 € · Zahlung über PayPal ·
+      Lizenz und Download sofort nach der Bestätigung
     </p>
 
     <ul class="trustbar">
@@ -112,7 +117,7 @@
       </li>
       <li>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
-        <div><strong>Updates gratis</strong><span>Lizenz gilt lebenslang</span></div>
+        <div><strong>Updates gratis</strong><span>24 Stunden bis Lifetime</span></div>
       </li>
       <li>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
@@ -513,13 +518,13 @@
           <li>
             <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg></span>
             <div>
-              <h3>Lebenslange Lizenz, Updates gratis</h3>
-              <p>Einmal kaufen, für immer nutzen. Neue Versionen lädst du jederzeit im Kundenbereich.</p>
+              <h3>Laufzeit nach Wahl, Updates gratis</h3>
+              <p>Ab 2 € zum Reinschnuppern oder einmalig für immer. Neue Versionen lädst du jederzeit im Kundenbereich.</p>
             </div>
           </li>
         </ul>
 
-        <a href="#preise" class="btn btn-primary btn-block" style="margin-top:26px" data-scroll-to="tarif-app">Tweak App für 15 € kaufen</a>
+        <a href="#preise" class="btn btn-primary btn-block" style="margin-top:26px" data-scroll-to="tarif-app">Laufzeit wählen und kaufen</a>
       </div>
 
     </div>
@@ -614,24 +619,32 @@
         <h3>Tweak App</h3>
         <p class="plan-desc">Das Werkzeug, mit dem du selbst tweakst — so oft du willst.</p>
 
-        <div class="price"><span class="amount">15</span><span class="cur">€</span><span class="once">einmalig</span></div>
+        <div class="price">
+          <span class="amount" id="app-preis">15</span><span class="cur">€</span><span class="once">einmalig</span>
+        </div>
+
+        <fieldset class="laufzeit-wahl" id="laufzeit-wahl">
+          <legend>Laufzeit wählen</legend>
+          <div class="laufzeit-knoepfe" id="laufzeit-knoepfe">
+            <!-- wird aus konfig.js aufgebaut und aus der Datenbank bestätigt -->
+          </div>
+        </fieldset>
 
         <ul class="features">
           <li>Über 40 Tweaks per Schalter</li>
           <li>Profile: Gaming, Standard, Silent</li>
           <li>Ein-Klick-Wiederherstellung</li>
           <li>Autostart-Manager</li>
-          <li>Lebenslange Lizenz für 1 PC</li>
+          <li id="app-lizenz-zeile">Lebenslange Lizenz für 1 PC</li>
           <li>Updates kostenlos</li>
           <li class="off">Keine persönliche Optimierung</li>
         </ul>
 
         <div class="plan-buy">
-          <div class="paypal-slot" data-paypal="app"></div>
-          <a class="btn btn-outline btn-block" href="https://paypal.me/Tyler971377/15EUR" target="_blank" rel="noopener" data-paypalme="15">
+          <a class="btn btn-outline btn-block" id="app-kaufen" href="kaufen.html?produkt=app-lifetime">
             Für 15 € kaufen
           </a>
-          <p class="plan-alt">Zahlung über PayPal · Lizenz nach Bestätigung</p>
+          <p class="plan-alt">Zahlung über PayPal · Lizenz sofort im Kundenbereich</p>
         </div>
       </article>
 
@@ -659,11 +672,10 @@
         </ul>
 
         <div class="plan-buy">
-          <div class="paypal-slot" data-paypal="bundle"></div>
-          <a class="btn btn-primary btn-block" href="https://paypal.me/Tyler971377/30EUR" target="_blank" rel="noopener" data-paypalme="30">
+          <a class="btn btn-primary btn-block" href="kaufen.html?produkt=bundle" data-preis="bundle">
             Für 30 € kaufen
           </a>
-          <p class="plan-alt">Zahlung über PayPal · Termin direkt danach</p>
+          <p class="plan-alt">Zahlung über PayPal · Lizenz sofort, Termin direkt danach</p>
         </div>
       </article>
 
@@ -686,8 +698,7 @@
         </ul>
 
         <div class="plan-buy">
-          <div class="paypal-slot" data-paypal="optimierung"></div>
-          <a class="btn btn-outline btn-block" href="https://paypal.me/Tyler971377/20EUR" target="_blank" rel="noopener" data-paypalme="20">
+          <a class="btn btn-outline btn-block" href="kaufen.html?produkt=optimierung" data-preis="optimierung">
             Für 20 € kaufen
           </a>
           <p class="plan-alt">Zahlung über PayPal · Termin nach Absprache</p>
@@ -698,8 +709,9 @@
 
     <p class="note">
       Alle Preise in Euro, inklusive der jeweils geltenden Steuern.
-      Nach der Zahlung meldest du dich kurz auf Discord (<strong>tyler061312</strong>) mit dem Namen,
-      unter dem du bezahlt hast — dann bekommst du deinen Lizenzschlüssel.
+      Für den Kauf brauchst du ein kostenloses Konto — dein Lizenzschlüssel wird nach
+      der bestätigten Zahlung automatisch erzeugt und liegt sofort in deinem
+      <a href="konto.html">Kundenbereich</a>. Du musst nichts anfordern.
     </p>
   </div>
 </section>
@@ -721,8 +733,8 @@
           <span class="art-pick"><i></i><i></i><i></i></span>
         </div>
         <span class="flow-num">1</span>
-        <h3>Paket auswählen</h3>
-        <p>Du entscheidest dich für die App, die Optimierung oder beides im Bundle und klickst auf „Kaufen“.</p>
+        <h3>Konto erstellen</h3>
+        <p>Registrieren, E-Mail bestätigen, fertig. Dauert eine Minute und kostet nichts — dort landen später Lizenz und Download.</p>
       </div>
 
       <div class="flow-step">
@@ -737,8 +749,8 @@
           </span>
         </div>
         <span class="flow-num">2</span>
-        <h3>Mit PayPal bezahlen</h3>
-        <p>Du wirst zu PayPal weitergeleitet und zahlst dort wie gewohnt. Deine Zahlungsdaten sehe ich nie — es gilt der PayPal-Käuferschutz.</p>
+        <h3>Paket wählen &amp; bezahlen</h3>
+        <p>Laufzeit aussuchen und über PayPal zahlen. Deine Zahlungsdaten sehe ich nie — es gilt der PayPal-Käuferschutz.</p>
       </div>
 
       <div class="flow-step">
@@ -750,8 +762,8 @@
           </span>
         </div>
         <span class="flow-num">3</span>
-        <h3>Bestätigung erhalten</h3>
-        <p>PayPal schickt dir sofort die Zahlungsbestätigung. Du meldest dich kurz auf Discord mit deinem PayPal-Namen.</p>
+        <h3>Schlüssel erscheint automatisch</h3>
+        <p>Sobald PayPal die Zahlung bestätigt, erzeugt das System deinen Lizenzschlüssel und legt ihn in dein Konto. Ohne Nachfragen, ohne Warten.</p>
       </div>
 
       <div class="flow-step">
@@ -765,8 +777,8 @@
           </span>
         </div>
         <span class="flow-num">4</span>
-        <h3>Lizenz &amp; Download</h3>
-        <p>Du bekommst deinen Lizenzschlüssel. Damit meldest du dich im Kundenbereich an und lädst die App herunter.</p>
+        <h3>Herunterladen &amp; freischalten</h3>
+        <p>Im Kundenbereich lädst du die App herunter, kopierst deinen Schlüssel und gibst ihn beim ersten Start ein. Fertig.</p>
       </div>
 
     </div>
@@ -777,9 +789,9 @@
     </p>
 
     <div style="text-align:center;margin-top:28px">
-      <a href="konto.html" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        Zum Kundenbereich
+      <a href="registrieren.html" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Kostenloses Konto erstellen
       </a>
     </div>
   </div>
@@ -839,7 +851,7 @@
           <li><span class="k">Aktuelle Version</span><span class="v" data-app-version>2.4.0</span></li>
           <li><span class="k">Stand</span><span class="v" data-app-date>18.09.2026</span></li>
           <li><span class="k">Updates</span><span class="v">kostenlos</span></li>
-          <li><span class="k">Laufzeit</span><span class="v">unbegrenzt</span></li>
+          <li><span class="k">Laufzeiten</span><span class="v">24 Std. bis Lifetime</span></li>
           <li><span class="k">Gültig für</span><span class="v">1 PC</span></li>
         </ul>
         <p class="muted" style="font-size:.85rem;margin-top:14px">
@@ -918,22 +930,39 @@
       <details>
         <summary>Wie bekomme ich meinen Lizenzschlüssel?</summary>
         <div class="faq-body">
-          <p>Nach der Zahlung schreibst du mir kurz auf Discord (<strong>tyler061312</strong>) mit dem Namen, unter dem du bezahlt hast. Ich gleiche die Zahlung ab und schicke dir den Schlüssel.</p>
-          <p>Mit dem Schlüssel meldest du dich im <a href="konto.html">Kundenbereich</a> an und lädst die App herunter.</p>
+          <p>Automatisch. Sobald PayPal die Zahlung bestätigt hat, erzeugt das System einen Schlüssel und ordnet ihn deinem Konto zu. Du findest ihn sofort im <a href="konto.html">Kundenbereich</a> unter „Meine Lizenzen“ — mit einem Knopf zum Kopieren.</p>
+          <p>Du musst niemanden anschreiben und auf nichts warten.</p>
         </div>
       </details>
 
       <details>
         <summary>Was mache ich, wenn ich den Schlüssel verloren habe?</summary>
         <div class="faq-body">
-          <p>Schreib mir auf Discord. Ich finde deinen Kauf über den PayPal-Namen und schicke dir den Schlüssel erneut — kostenlos.</p>
+          <p>Nichts — er steht dauerhaft in deinem <a href="konto.html">Kundenbereich</a>. Melde dich einfach an.</p>
+          <p>Passwort vergessen? Dann kannst du es dir über <a href="passwort-vergessen.html">„Passwort vergessen“</a> per E-Mail zurücksetzen.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Welche Laufzeiten gibt es?</summary>
+        <div class="faq-body">
+          <p>Die Tweak App gibt es für 24 Stunden, 2 Tage, 1 Woche, 1 Monat, 1 Jahr — oder als Lifetime-Lizenz, die nie abläuft.</p>
+          <p>Kurze Laufzeiten sind zum Ausprobieren gedacht. Nach Ablauf lässt sich die App nicht mehr starten; deine Windows-Einstellungen bleiben natürlich so, wie du sie gesetzt hast, und lassen sich jederzeit über Windows selbst zurücknehmen.</p>
         </div>
       </details>
 
       <details>
         <summary>Auf wie vielen PCs darf ich die App nutzen?</summary>
         <div class="faq-body">
-          <p>Eine Lizenz gilt für einen PC. Wenn du das Gerät wechselst, sag kurz Bescheid — der Umzug ist kostenlos.</p>
+          <p>Eine Lizenz gilt für einen PC. Beim ersten Start wird der Schlüssel an diesen Rechner gebunden.</p>
+          <p>Wenn du das Gerät wechselst, schreib mir kurz auf Discord — ich löse die Bindung, der Umzug ist kostenlos.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Brauche ich für den Kauf ein Konto?</summary>
+        <div class="faq-body">
+          <p>Ja, ein kostenloses Konto mit E-Mail-Adresse und Passwort. Dadurch liegen Bestellung, Lizenzschlüssel und Download dauerhaft an einer Stelle — und du kommst auch dann wieder heran, wenn du den Schlüssel verlierst oder den PC neu aufsetzt.</p>
         </div>
       </details>
 
@@ -1008,12 +1037,15 @@
     </div>
 
     <div>
-      <h4>Hilfe</h4>
+      <h4>Konto</h4>
       <ul>
         <li><a href="konto.html">Kundenbereich</a></li>
+        <li><a href="anmelden.html">Anmelden</a></li>
+        <li><a href="registrieren.html">Registrieren</a></li>
         <li><a href="#faq">Häufige Fragen</a></li>
         <li><a href="#vertrauen">Sicherheit &amp; Backup</a></li>
-        <li><a href="https://discord.com/users/" target="_blank" rel="noopener">Discord: tyler061312</a></li>
+        <li><a href="impressum.html">Impressum</a></li>
+        <li><a href="datenschutz.html">Datenschutz</a></li>
       </ul>
     </div>
   </div>
@@ -1026,11 +1058,18 @@
       Windows ist eine Marke der Microsoft Corporation, PayPal eine Marke der PayPal Inc. —
       Tyler Tweaks steht mit keinem der beiden Unternehmen in Verbindung.
     </p>
+    <p class="rechtslinks">
+      <a href="impressum.html">Impressum</a>
+      <span aria-hidden="true">&#183;</span>
+      <a href="datenschutz.html">Datenschutz</a>
+    </p>
     <p class="copy">© <span id="year">2026</span> Tyler Tweaks</p>
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="konfig.js"></script>
+<script src="tt-backend.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
