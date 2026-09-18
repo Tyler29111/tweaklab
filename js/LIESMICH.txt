@@ -1,0 +1,49 @@
+Programmbibliothek — Herkunft und Lizenz
+========================================
+
+supabase-js-2.45.4.js
+
+Das ist die offizielle JavaScript-Bibliothek von Supabase. Sie kümmert sich um
+Anmeldung, Datenbankabfragen und die Aufrufe der Edge Functions.
+
+Sie liegt bewusst hier im Projekt und wird NICHT mehr über ein fremdes
+Auslieferungsnetz (cdn.jsdelivr.net) geladen. Damit geht beim Aufruf der Seite
+keine Besucher-IP mehr an einen Dritten. Die einzige verbleibende Verbindung
+nach außen ist die zu deinem eigenen Supabase-Projekt — und die ist der Zweck
+der Sache.
+
+Version
+-------
+@supabase/supabase-js 2.45.4, UMD-Bundle (dist/umd/supabase.js)
+Bereits minimiert. Die ebenfalls angebotene .min.js ist dieselbe Datei und
+sogar ein paar Bytes größer — sie bringt hier also nichts.
+
+Die Datei setzt beim Laden das globale Objekt window.supabase mit der
+Funktion createClient. Genau darauf baut tt-backend.js auf.
+
+Lizenz
+------
+MIT License, © Supabase Inc.
+https://github.com/supabase/supabase-js
+
+Die MIT-Lizenz erlaubt Weitergabe und eigenes Ausliefern, auch kommerziell.
+Bedingung ist allein, dass Lizenz- und Urheberrechtshinweis erhalten bleiben —
+was diese Datei erfüllt. Der vollständige Lizenztext steht im verlinkten
+Projekt.
+
+Aktualisieren
+-------------
+Nur bewusst aktualisieren und danach den Kaufablauf einmal durchtesten — an
+dieser Bibliothek hängen Anmeldung, Bestellung und Lizenzanzeige.
+
+  1. Neue Fassung holen:
+     https://cdn.jsdelivr.net/npm/@supabase/supabase-js@<VERSION>/dist/umd/supabase.js
+
+  2. Hier als supabase-js-<VERSION>.js ablegen.
+
+  3. In allen HTML-Dateien den Dateinamen im <script src="js/...">-Verweis
+     anpassen. Die Versionsnummer steht absichtlich im Dateinamen: So kann
+     kein Browser versehentlich eine alte Fassung aus dem Zwischenspeicher
+     verwenden, wenn du wechselst.
+
+  4. Alte Datei löschen.

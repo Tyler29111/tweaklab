@@ -112,12 +112,24 @@ Damit Anmeldung und Mail-Links lokal funktionieren, muss
 `http://localhost:5173/**` in Supabase unter
 **Authentication → URL Configuration → Redirect URLs** stehen.
 
-## Schriftarten
+## Keine fremden Server
 
-Inter und Space Grotesk liegen als Variable Fonts in `fonts/` und werden von
-diesem Server ausgeliefert, nicht von Google. Dadurch geht beim Seitenaufruf
-keine Besucher-IP an Dritte. Herkunft, Lizenz (SIL OFL 1.1) und die Anleitung
-zum Aktualisieren stehen in `fonts/LIESMICH.txt`.
+Alles, was die Seite zum Anzeigen und Funktionieren braucht, liegt im Projekt:
+
+| Ordner | Inhalt | Lizenz |
+|---|---|---|
+| `fonts/` | Inter und Space Grotesk als Variable Fonts | SIL OFL 1.1 |
+| `js/` | supabase-js (Anmeldung, Datenbank, Edge Functions) | MIT |
+
+Beim Aufruf der Seite geht dadurch **keine einzige Anfrage an einen Dritten** —
+weder an Google Fonts noch an ein Auslieferungsnetz. Die einzige Verbindung
+nach außen ist die zu deinem eigenen Supabase-Projekt, und die ist der Zweck
+der Sache.
+
+Herkunft, Lizenz und die Anleitung zum Aktualisieren stehen jeweils in
+`LIESMICH.txt` im betreffenden Ordner. Die Versionsnummer der Bibliothek steht
+absichtlich im Dateinamen, damit beim Wechsel kein Browser eine alte Fassung
+aus dem Zwischenspeicher verwendet.
 
 ## Offen
 
