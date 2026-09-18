@@ -224,13 +224,20 @@
 </main>
 
 <script src="konfig.js"></script>
-<script src="lizenzen.js"></script>
 <script src="lizenz.js"></script>
 <script>
 (function () {
   'use strict';
 
   var L = window.TTLizenz;
+
+  // Lizenzliste mit Zeitstempel nachladen, damit das Nachschlagen nicht
+  // auf einer veralteten Fassung aus dem Browser-Zwischenspeicher arbeitet.
+  (function listeLaden() {
+    var s = document.createElement('script');
+    s.src = 'lizenzen.js?t=' + Date.now();
+    document.head.appendChild(s);
+  })();
 
   // Ohne verwechselbare Zeichen: kein I, O, 0, 1
   var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

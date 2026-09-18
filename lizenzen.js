@@ -25,12 +25,6 @@
 
 window.TT_LIZENZEN = {
 
-  'c7680442f9f4d7de7092a0d4e5edab23bcb39055b39a9b8745ffba3ad07dbb7f': {
-    produkt: 'app',
-    ausgestellt: '18.09.2026',
-    notiz: 'Selbsttest - wird gleich wieder entfernt'
-  },
-
   /* ---- Testschlüssel ---------------------------------------------------
      Zum Ausprobieren des Kundenbereichs. Vor dem Live-Gang löschen!
 

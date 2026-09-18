@@ -16,6 +16,24 @@
   var formular     = document.getElementById('login-form');
   var eingabe      = document.getElementById('schluessel');
   var meldung      = document.getElementById('meldung');
+  var knopfAnmelden = formular ? formular.querySelector('button[type="submit"]') : null;
+
+  /* ====================================================================
+     Lizenzliste laden — mit Zeitstempel gegen den Zwischenspeicher
+
+     GitHub Pages erlaubt Browsern, Dateien bis zu zehn Minuten lang
+     aufzubewahren. Stünde lizenzen.js als <script> im HTML, bekäme ein
+     Kunde womöglich die Liste von vorhin — und sein frisch vergebener
+     Schlüssel würde abgelehnt, obwohl er längst online ist.
+     Der Zeitstempel erzwingt bei jedem Aufruf eine frische Liste.
+     ==================================================================== */
+  function listeLaden(fertig) {
+    var skript = document.createElement('script');
+    skript.src = 'lizenzen.js?t=' + Date.now();
+    skript.onload  = function () { fertig(true); };
+    skript.onerror = function () { fertig(false); };
+    document.head.appendChild(skript);
+  }
 
   /* ====================================================================
      Discord-Name aus der Konfiguration überall eintragen
@@ -235,23 +253,37 @@
   }
 
   /* ====================================================================
-     Beim Laden: gemerkte Anmeldung prüfen
+     Beim Laden: erst die Lizenzliste holen, dann gemerkte Anmeldung prüfen
      ==================================================================== */
   (function start() {
-    var gemerkt = Lizenz.gemerkt();
-    if (!gemerkt) {
-      if (eingabe) eingabe.focus();
-      return;
-    }
+    // Solange die Liste fehlt, darf niemand anmelden — sonst käme
+    // fälschlich „Schlüssel unbekannt“ heraus.
+    if (knopfAnmelden) knopfAnmelden.disabled = true;
 
-    var ergebnis = Lizenz.pruefen(gemerkt);
-    if (ergebnis.ok) {
-      kontoAnzeigen(ergebnis);
-    } else {
-      // Schlüssel wurde zwischenzeitlich entfernt oder gesperrt
-      Lizenz.vergessen();
-      if (eingabe) eingabe.focus();
-    }
+    listeLaden(function (geklappt) {
+      if (knopfAnmelden) knopfAnmelden.disabled = false;
+
+      if (!geklappt) {
+        zeigeFehler('Die Lizenzliste konnte nicht geladen werden. Prüfe deine ' +
+                    'Internetverbindung und lade die Seite neu.');
+        return;
+      }
+
+      var gemerkt = Lizenz.gemerkt();
+      if (!gemerkt) {
+        if (eingabe) eingabe.focus();
+        return;
+      }
+
+      var ergebnis = Lizenz.pruefen(gemerkt);
+      if (ergebnis.ok) {
+        kontoAnzeigen(ergebnis);
+      } else {
+        // Schlüssel wurde zwischenzeitlich entfernt oder gesperrt
+        Lizenz.vergessen();
+        if (eingabe) eingabe.focus();
+      }
+    });
   })();
 
 })();
