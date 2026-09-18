@@ -25,6 +25,12 @@
 
 window.TT_LIZENZEN = {
 
+  '77e50a453a759dcb9aeeff5226bbaed300bcf071151365e7977a4320e974fa17': {
+    produkt: 'bundle',
+    ausgestellt: '18.09.2026',
+    notiz: 'Sofort-Test'
+  },
+
   /* ---- Testschlüssel ---------------------------------------------------
      Zum Ausprobieren des Kundenbereichs. Vor dem Live-Gang löschen!
 
