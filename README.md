@@ -19,7 +19,8 @@ Live: https://tylertweaks.github.io/
 |---|---|
 | `index.html` | Startseite: Hero, App-Vorstellung, Preise, Kaufablauf, Sicherheit, FAQ |
 | `konto.html` | Kundenbereich mit Lizenz-Login und Download |
-| `werkzeug-lizenzen.html` | Internes Werkzeug: neue Lizenzschlüssel erzeugen |
+| `neuer-kunde.ps1` | **Automatik:** Schlüssel erzeugen, eintragen und hochladen |
+| `werkzeug-lizenzen.html` | Werkzeug im Browser: erzeugt nur den Schlüssel |
 | `konfig.js` | **Zentrale Einstellungen** — Preise, PayPal, App-Version, Download |
 | `lizenzen.js` | Liste der ausgegebenen Lizenzen (nur Hashes) |
 | `lizenz.js` | SHA-256 und Lizenzprüfung |
@@ -34,11 +35,25 @@ Im Normalbetrieb fasst du nur **`konfig.js`** und **`lizenzen.js`** an.
 
 ## Neuen Kunden freischalten
 
-1. `werkzeug-lizenzen.html` im Browser öffnen (Doppelklick reicht)
-2. Produkt auswählen, auf **Schlüssel erzeugen** klicken
-3. Den Schlüssel dem Kunden schicken — er erscheint nur dieses eine Mal
-4. Die angezeigte Code-Zeile in `lizenzen.js` vor die schließende Klammer setzen
-5. `lizenzen.js` ins Repository hochladen
+**Der einfache Weg:** Auf dem Desktop **„Neuer Kunde"** doppelklicken.
+
+Das Fenster fragt nach dem Produkt und einer Notiz, erzeugt dann den Schlüssel,
+trägt ihn in `lizenzen.js` ein und lädt alles zu GitHub hoch. Du musst keine
+Datei anfassen. Nach etwa einer Minute kann sich der Kunde anmelden.
+
+Dasselbe von Hand, falls nötig:
+
+```powershell
+.\neuer-kunde.ps1 -Produkt bundle -Notiz "Max von Discord"
+```
+
+`-Produkt` ist `app`, `optimierung` oder `bundle`. Mit `-NichtHochladen`
+wird nur eingetragen, ohne hochzuladen.
+
+**Der Weg über den Browser** (`werkzeug-lizenzen.html`) macht nur den ersten
+Schritt — er erzeugt den Schlüssel, trägt ihn aber **nicht** ein. Dort musst du
+die angezeigte Code-Zeile selbst in `lizenzen.js` einfügen und danach hochladen.
+Ohne diesen zweiten Schritt lehnt der Kundenbereich den Schlüssel ab.
 
 Einen Schlüssel sperrst du, indem du bei seinem Eintrag `gesperrt: true` ergänzt.
 

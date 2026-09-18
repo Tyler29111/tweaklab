@@ -72,6 +72,28 @@
     font-size: .92rem;
   }
   .warnbox strong { color: var(--warn); }
+
+  /* Deutlicher Halt zwischen Schritt 1 und Schritt 2 */
+  .stopbox {
+    margin: 18px 0 0;
+    padding: 16px 18px;
+    background: rgba(248, 113, 113, .09);
+    border: 1px solid rgba(248, 113, 113, .4);
+    border-radius: var(--radius-sm);
+  }
+  .stopbox strong { display: block; color: #fca5a5; font-size: 1rem; margin-bottom: 6px; }
+  .stopbox p { margin: 0; color: var(--text-2); font-size: .92rem; }
+
+  .tun { margin: 16px 0 0; padding-left: 20px; color: var(--text-2); font-size: .9rem; }
+  .tun li { margin-bottom: 7px; }
+  .tun li:last-child { margin-bottom: 0; }
+  .tun code {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .07);
+    font-family: 'Space Grotesk', ui-monospace, monospace;
+    font-size: .88em;
+  }
 </style>
 </head>
 <body>
@@ -128,19 +150,35 @@
 
       <div id="ergebnis" hidden>
         <div class="out">
-          <span class="cap">Das bekommt der Kunde</span>
+          <span class="cap">Schritt 1 von 2 — das bekommt der Kunde</span>
           <pre class="big" id="aus-schluessel"></pre>
           <div class="row">
             <button type="button" class="btn btn-outline btn-sm" data-kopieren="aus-schluessel">Schlüssel kopieren</button>
           </div>
         </div>
 
+        <div class="stopbox">
+          <strong>Dieser Schlüssel funktioniert noch nicht.</strong>
+          <p>
+            Erzeugen allein genügt nicht. Der Schlüssel wird erst gültig, wenn du
+            Schritt 2 erledigst — sonst meldet der Kundenbereich
+            „Diesen Schlüssel kenne ich nicht“.
+          </p>
+        </div>
+
         <div class="out">
-          <span class="cap">Das kommt in lizenzen.js — vor die schließende Klammer</span>
+          <span class="cap">Schritt 2 von 2 — das kommt in lizenzen.js, vor die schließende Klammer</span>
           <pre id="aus-code"></pre>
           <div class="row">
             <button type="button" class="btn btn-outline btn-sm" data-kopieren="aus-code">Code kopieren</button>
           </div>
+          <ol class="tun">
+            <li><strong>lizenzen.js</strong> im Editor öffnen (liegt in <code>E:\Neuer Ordner</code>)</li>
+            <li>Ganz nach unten scrollen, die kopierte Zeile <strong>vor die letzte Zeile <code>};</code></strong> einfügen</li>
+            <li>Speichern</li>
+            <li>Auf dem Desktop <strong>„Webseite hochladen“</strong> doppelklicken</li>
+            <li>Eine Minute warten — erst dann funktioniert der Schlüssel</li>
+          </ol>
         </div>
       </div>
     </section>
