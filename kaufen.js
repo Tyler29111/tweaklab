@@ -25,17 +25,56 @@
   TT.grundgeruest();
   TT.navAufbauen();
 
-  var elLaden     = document.getElementById('laden');
-  var elKauf      = document.getElementById('kauf');
-  var elFertig    = document.getElementById('fertig');
-  var elUnbekannt = document.getElementById('unbekannt');
+  var elLaden      = document.getElementById('laden');
+  var elKauf       = document.getElementById('kauf');
+  var elFertig     = document.getElementById('fertig');
+  var elUnbekannt  = document.getElementById('unbekannt');
+  var elNichtDa    = document.getElementById('nicht-erreichbar');
 
   var produkt = null;
 
   function zeige(welches) {
-    [elLaden, elKauf, elFertig, elUnbekannt].forEach(function (el) {
+    [elLaden, elKauf, elFertig, elUnbekannt, elNichtDa].forEach(function (el) {
       if (el) el.hidden = el !== welches;
     });
+  }
+
+  /**
+   * Der Shop antwortet nicht. Das ist etwas anderes als "Paket gibt es nicht"
+   * und muss dem Kunden auch anders gesagt werden — sonst hält er ein
+   * Serverproblem für ein eingestelltes Produkt.
+   *
+   * Der technische Grund geht nur den Betreiber etwas an. Er landet in der
+   * Konsole und, falls die Seite lokal läuft, zusätzlich sichtbar auf der
+   * Seite. Ein Kunde auf der echten Adresse sieht ihn nie.
+   */
+  function shopNichtErreichbar(fehler) {
+    console.error('Shop nicht erreichbar:', fehler);
+    zeige(elNichtDa);
+    TT.grundgeruest(); // Discord-Namen im neu sichtbaren Bereich einsetzen
+
+    var lokal = window.location.hostname === 'localhost' ||
+                window.location.hostname === '127.0.0.1';
+    var kasten = document.getElementById('betreiber-hinweis');
+    if (!kasten) return;
+
+    // PGRST205 heißt: Die Tabelle gibt es nicht. Das ist der mit Abstand
+    // häufigste Fall direkt nach dem Aufsetzen.
+    var tabelleFehlt = fehler && (fehler.code === 'PGRST205' ||
+      /schema cache|does not exist/i.test(String(fehler.message || '')));
+
+    if (tabelleFehlt) {
+      kasten.textContent = 'Betreiber-Hinweis: Die Produkttabelle fehlt. ' +
+        'Führe 01-lizenztypen-erweitern.sql und 02-shop-schema.sql im ' +
+        'Supabase-SQL-Editor aus (Schritt 1 der Einrichtung).';
+      kasten.hidden = false;
+      return;
+    }
+
+    if (lokal && fehler) {
+      kasten.textContent = 'Betreiber-Hinweis: ' + (fehler.message || fehler);
+      kasten.hidden = false;
+    }
   }
 
   /* ====================================================================
@@ -68,7 +107,11 @@
       .eq('active', true)
       .maybeSingle();
 
-    if (erg.error || !erg.data) return zeige(elUnbekannt);
+    // Zwei Fälle, die auseinandergehalten werden müssen:
+    // erg.error  -> der Server antwortet nicht (Tabelle fehlt, Netz weg, …)
+    // kein Datensatz -> das Paket gibt es tatsächlich nicht mehr
+    if (erg.error) return shopNichtErreichbar(erg.error);
+    if (!erg.data) return zeige(elUnbekannt);
 
     produkt = erg.data;
     kaufAufbauen(sitzung);
@@ -90,6 +133,12 @@
     document.getElementById('p-key').textContent = produkt.license_type
       ? 'wird automatisch erzeugt'
       : 'nicht nötig';
+
+    /* Der Zusatz zum vorzeitigen Erlöschen des Widerrufsrechts gilt nur für
+       digitale Inhalte. Bei der reinen Dienstleistung bleibt das Widerrufsrecht
+       bestehen — dort wäre der Satz schlicht falsch. */
+    var digital = document.getElementById('zustimmung-digital');
+    if (digital && !produkt.license_type) digital.hidden = true;
 
     zeige(elKauf);
     paypalLaden();
@@ -137,8 +186,29 @@
       var laden = document.getElementById('paypal-laden');
       if (laden) laden.hidden = true;
 
+      var haken = document.getElementById('zustimmung');
+
       window.paypal.Buttons({
         style: { layout: 'vertical', shape: 'pill', color: 'gold', label: 'paypal', height: 48 },
+
+        /* ---- Knöpfe erst nach der Zustimmung freigeben ------------------ */
+        onInit: function (data, actions) {
+          if (!haken) return;
+          actions.disable();
+          haken.addEventListener('change', function () {
+            if (haken.checked) { actions.enable(); TT.melden('meldung', ''); }
+            else actions.disable();
+          });
+        },
+
+        onClick: function (data, actions) {
+          if (haken && !haken.checked) {
+            TT.melden('meldung',
+              'Bitte bestätige zuerst AGB und Widerrufsbelehrung.', 'warn');
+            return actions.reject();
+          }
+          return actions.resolve();
+        },
 
         /* ---- Bestellung anlegen (serverseitig) ------------------------- */
         createOrder: async function () {

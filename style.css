@@ -1918,6 +1918,74 @@ strong { color: var(--text); font-weight: 600; }
 .rechts-fuss p { margin-bottom: .8em; }
 .rechts-fuss p:last-child { margin-bottom: 0; }
 
+/* Zustimmung zu AGB und Widerruf auf der Kaufseite */
+.zustimmung {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px 18px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  font-size: .88rem;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: border-color .18s ease;
+}
+.zustimmung:hover { border-color: var(--accent); }
+.zustimmung input {
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.zustimmung a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.zustimmung #zustimmung-digital { display: block; margin-top: 6px; }
+.zustimmung #zustimmung-digital[hidden] { display: none; }
+
+/* Muster-Widerrufsformular: liest sich wie ein Formular zum Ausdrucken,
+   ohne eines zu sein. */
+.muster-formular {
+  margin: 20px 0;
+  padding: 24px 22px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  font-size: .92rem;
+  line-height: 1.9;
+}
+.muster-formular p { color: var(--text-2); margin-bottom: 1.2em; }
+.muster-formular p:last-child { margin-bottom: 0; }
+.muster-formular .muster-fuss {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .84rem;
+  line-height: 1.6;
+}
+
+/* Technischer Hinweis, der nur den Betreiber etwas angeht — bewusst
+   zurückhaltend, damit er im Ernstfall nicht wie eine Kundenmeldung wirkt. */
+.betreiber-hinweis {
+  margin: 20px 0 0;
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-xs);
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.55;
+}
+
 .rechtstext .zurueck {
   margin-top: 40px;
   font-size: .95rem;

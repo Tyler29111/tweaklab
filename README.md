@@ -131,14 +131,37 @@ Herkunft, Lizenz und die Anleitung zum Aktualisieren stehen jeweils in
 absichtlich im Dateinamen, damit beim Wechsel kein Browser eine alte Fassung
 aus dem Zwischenspeicher verwendet.
 
+## Rechtliches
+
+Vier Seiten, aus dem Fußbereich jeder Seite erreichbar:
+
+| Seite | Inhalt |
+|---|---|
+| `impressum.html` | Anbieterkennzeichnung nach § 5 DDG |
+| `datenschutz.html` | Information nach Art. 13 DSGVO |
+| `agb.html` | Allgemeine Geschäftsbedingungen |
+| `widerruf.html` | Widerrufsbelehrung mit Muster-Formular |
+
+Auf der Kaufseite muss der Kunde AGB und Widerrufsbelehrung **aktiv per
+Haken bestätigen** — vorher bleiben die PayPal-Knöpfe abgeschaltet. Bei
+Softwarelizenzen enthält der Text zusätzlich die ausdrückliche Zustimmung zum
+sofortigen Beginn; ohne die erlischt das Widerrufsrecht nicht vorzeitig. Bei
+der PC-Optimierung wird dieser Zusatz automatisch ausgeblendet, weil er dort
+nicht zutrifft.
+
 ## Offen
 
-`impressum.html` und `datenschutz.html` sind **fertig gebaut, aber noch mit
-Platzhaltern** — beide tragen eine gelbe Warnbox. Vor dem ersten echten Verkauf
-musst du dort Name, Postanschrift, E-Mail-Adresse und die Umsatzsteuer-Angabe
-einsetzen und die Warnbox entfernen.
+Alle vier Rechtsseiten sind **fertig gebaut, aber noch mit Platzhaltern** —
+jede trägt eine gelbe Warnbox. Vor dem ersten echten Verkauf einsetzen:
 
-Es fehlen weiterhin **AGB** und eine saubere **Widerrufsbelehrung**.
+- Name und vollständige Postanschrift
+- eine E-Mail-Adresse (vorgeschrieben, Discord allein genügt nicht)
+- die Umsatzsteuer-Angabe — entweder USt-IdNr. oder der
+  Kleinunternehmer-Satz nach § 19 UStG
+
+Danach die Warnboxen entfernen (`<div class="platzhalter-warnung">`).
+
+Die Texte sind Vorlagen nach üblichem Aufbau, **keine anwaltliche Prüfung**.
 
 ## Kontakt
 

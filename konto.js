@@ -27,7 +27,8 @@
     bestellungen: [],
     lizenzen: [],
     produkte: {},
-    release: null
+    release: null,
+    ladefehler: null
   };
 
   /* Kommt der Kunde frisch über den Bestätigungslink, steht das Anmelde-Token
@@ -100,6 +101,33 @@
     var fehler = ergebnisse.filter(function (e) { return e.error; });
     if (fehler.length) {
       console.error('Konto laden:', fehler.map(function (f) { return f.error; }));
+
+      /* Wichtig: Wenn Bestellungen oder Lizenzen nicht geladen werden konnten,
+         darf hier NICHT "Noch keine Bestellung" stehen. Das wäre glatt gelogen
+         — der Kunde hätte vielleicht bezahlt und sähe nichts. Stattdessen wird
+         ehrlich gesagt, dass die Daten gerade nicht abrufbar sind. */
+      daten.ladefehler = ergebnisse[0].error || ergebnisse[1].error || null;
+    }
+  }
+
+  /** Meldet ehrlich, wenn Bestellungen/Lizenzen nicht geladen werden konnten. */
+  function ladefehlerMelden() {
+    if (!daten.ladefehler) return;
+
+    var f = daten.ladefehler;
+    var tabelleFehlt = f.code === 'PGRST205' ||
+      /schema cache|does not exist/i.test(String(f.message || ''));
+
+    TT.melden('meldung',
+      'Deine Bestellungen und Lizenzen lassen sich gerade nicht abrufen. ' +
+      'Das liegt an uns, nicht an dir — deine Käufe sind nicht verloren. ' +
+      'Versuch es in ein paar Minuten noch einmal.', 'error');
+
+    if (tabelleFehlt) {
+      console.warn(
+        'Betreiber-Hinweis: Die Shop-Tabellen fehlen. Führe ' +
+        '01-lizenztypen-erweitern.sql und 02-shop-schema.sql im ' +
+        'Supabase-SQL-Editor aus (Schritt 1 der Einrichtung).');
     }
   }
 
@@ -147,6 +175,7 @@
      Alles füllen
      ==================================================================== */
   function aufbauen() {
+    ladefehlerMelden();
     kopfFuellen();
     uebersichtFuellen();
     bestellungenFuellen();
@@ -206,6 +235,18 @@
   }
 
   function leerKasten(titel, text, knopfText, knopfZiel) {
+    /* Konnten die Daten nicht geladen werden, ist "Noch nichts vorhanden"
+       die falsche Auskunft. Jeder leere Bereich sagt dann stattdessen die
+       Wahrheit. */
+    if (daten.ladefehler) {
+      return '<div class="leer-kasten">' +
+        '<h3>Daten gerade nicht abrufbar</h3>' +
+        '<p>Das ist ein Problem auf unserer Seite, nicht bei dir. ' +
+        'Deine Käufe und Lizenzen sind nicht verloren — versuch es in ein ' +
+        'paar Minuten noch einmal.</p>' +
+        '</div>';
+    }
+
     return '<div class="leer-kasten">' +
       '<h3>' + TT.escape(titel) + '</h3>' +
       '<p>' + TT.escape(text) + '</p>' +
