@@ -1,0 +1,48 @@
+Schriftarten — Herkunft und Lizenz
+==================================
+
+Diese vier Dateien liegen bewusst hier im Projekt und werden NICHT mehr von
+Google-Servern nachgeladen. Damit verlässt beim Aufruf der Seite keine
+IP-Adresse eines Besuchers das Haus, nur weil eine Schrift gebraucht wird.
+
+Dateien
+-------
+inter-latin.woff2              Inter, Zeichensatz Latin
+inter-latin-ext.woff2          Inter, Zeichensatz Latin erweitert
+space-grotesk-latin.woff2      Space Grotesk, Zeichensatz Latin
+space-grotesk-latin-ext.woff2  Space Grotesk, Zeichensatz Latin erweitert
+
+Es sind sogenannte Variable Fonts: eine Datei enthält alle Schriftstärken
+von 400 bis 700 (Inter) bzw. 500 bis 700 (Space Grotesk). Deshalb reichen
+vier Dateien statt vierzehn.
+
+Kyrillisch, Griechisch und Vietnamesisch sind absichtlich nicht dabei — die
+Seite ist deutschsprachig und bräuchte sie nie.
+
+Lizenz
+------
+Inter          © The Inter Project Authors (https://github.com/rsms/inter)
+Space Grotesk  © Florian Karsten (https://github.com/floriankarsten/space-grotesk)
+
+Beide stehen unter der SIL Open Font License, Version 1.1.
+Volltext: https://openfontlicense.org
+
+Die OFL erlaubt ausdrücklich, die Schriften weiterzugeben und auf eigenen
+Servern auszuliefern — auch kommerziell. Zwei Bedingungen sind zu beachten:
+
+  1. Die Schriftdateien dürfen nicht einzeln verkauft werden.
+  2. Dieser Lizenzhinweis muss erhalten bleiben.
+
+Beides ist mit dieser Datei erfüllt.
+
+Aktualisieren
+-------------
+Die Dateien stammen von fonts.gstatic.com, geholt über die CSS-Schnittstelle
+von Google Fonts. Ein Update ist selten nötig — wenn doch, die aktuellen
+Adressen so abfragen:
+
+  https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Space+Grotesk:wght@500..700&display=swap
+
+(mit einem normalen Browser-User-Agent, sonst kommen ältere Formate zurück).
+Danach nur die Blöcke "latin" und "latin-ext" herunterladen und die Dateien
+hier ersetzen. Die @font-face-Regeln in style.css bleiben unverändert.

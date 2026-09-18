@@ -112,12 +112,21 @@ Damit Anmeldung und Mail-Links lokal funktionieren, muss
 `http://localhost:5173/**` in Supabase unter
 **Authentication → URL Configuration → Redirect URLs** stehen.
 
+## Schriftarten
+
+Inter und Space Grotesk liegen als Variable Fonts in `fonts/` und werden von
+diesem Server ausgeliefert, nicht von Google. Dadurch geht beim Seitenaufruf
+keine Besucher-IP an Dritte. Herkunft, Lizenz (SIL OFL 1.1) und die Anleitung
+zum Aktualisieren stehen in `fonts/LIESMICH.txt`.
+
 ## Offen
 
-**Impressum und Datenschutzerklärung fehlen.** Sobald das Angebot gewerblich
-läuft, sind beide in Deutschland und Österreich Pflicht. Die
-Datenschutzerklärung muss unter anderem Google Fonts, PayPal, Supabase und —
-falls genutzt — Cloudflare R2 nennen.
+`impressum.html` und `datenschutz.html` sind **fertig gebaut, aber noch mit
+Platzhaltern** — beide tragen eine gelbe Warnbox. Vor dem ersten echten Verkauf
+musst du dort Name, Postanschrift, E-Mail-Adresse und die Umsatzsteuer-Angabe
+einsetzen und die Warnbox entfernen.
+
+Es fehlen weiterhin **AGB** und eine saubere **Widerrufsbelehrung**.
 
 ## Kontakt
 
