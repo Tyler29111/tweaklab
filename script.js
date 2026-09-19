@@ -308,6 +308,19 @@
       return aufUebergangUmstellen();
     }
 
+    /* Sandbox: Hier kann nur mit PayPal-Testkonten bezahlt werden, ein echter
+       Kunde kommt in der Kasse nicht durch. Solange paypalUmgebung nicht auf
+       'live' steht, bleibt für Besucher deshalb der paypal.me-Weg stehen.
+
+       Zum Testen hängst du ?shoptest=1 an die Adresse — dann siehst du die
+       echte Kasse, während alle anderen weiter normal kaufen können. */
+    var istLive = String(KONFIG.paypalUmgebung || '').toLowerCase() === 'live';
+    var testWill = new URLSearchParams(window.location.search).has('shoptest');
+
+    if (!istLive && !testWill) {
+      return aufUebergangUmstellen();
+    }
+
     if (!window.TT || !TT.db) return aufUebergangUmstellen();
 
     var erg = await TT.db.from('products')

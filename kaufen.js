@@ -140,6 +140,12 @@
     var digital = document.getElementById('zustimmung-digital');
     if (digital && !produkt.license_type) digital.hidden = true;
 
+    /* Läuft PayPal noch im Testbetrieb, muss das hier stehen. Sonst wartet
+       jemand auf eine Lizenz für eine Zahlung, die nie stattgefunden hat. */
+    var istLive = String(KONFIG.paypalUmgebung || '').toLowerCase() === 'live';
+    var hinweis = document.getElementById('testmodus');
+    if (hinweis && !istLive) hinweis.hidden = false;
+
     zeige(elKauf);
     paypalLaden();
   }

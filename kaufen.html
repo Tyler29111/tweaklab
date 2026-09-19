@@ -62,6 +62,17 @@
 
       <div class="form-msg" id="meldung" role="alert"></div>
 
+      <!-- Erscheint nur, solange PayPal im Testbetrieb läuft. Ein Besucher
+           muss wissen, dass hier kein echtes Geld fließt — sonst wartet er
+           auf eine Lizenz, die nie kommt. -->
+      <div class="hinweis-kasten warn" id="testmodus" hidden>
+        <p><strong>Testbetrieb.</strong> Die Bezahlung ist hier noch mit
+           PayPal-Testkonten verbunden. Eine Zahlung mit einem echten
+           PayPal-Konto ist nicht möglich und es wird kein Geld abgebucht.</p>
+        <p class="muted">Zum tatsächlichen Kauf geht es über die
+           <a href="index.html#preise">Preisseite</a>.</p>
+      </div>
+
       <section class="panel kasse-panel">
         <div class="kasse-zeile">
           <div>
