@@ -260,10 +260,29 @@
       '<span class="punkt" aria-hidden="true"></span>' + TT.escape(status.text) + '</span>';
   }
 
-  /* ---- Übersicht ------------------------------------------------------- */
+  /* ---- Übersicht -------------------------------------------------------
+     Das Erste, was der Kunde nach dem Anmelden sieht. Deshalb steht hier
+     alles, was er im Alltag wirklich braucht — Schlüssel zum Kopieren und
+     Download — statt ihn erst durch drei Bereiche klicken zu lassen.
+     --------------------------------------------------------------------- */
   function uebersichtFuellen() {
     var meine = besitz();
     var ziel = document.getElementById('u-produkte');
+    var schnell = document.getElementById('u-schnellzugriff');
+
+    /* Die wichtigste Lizenz oben: die gültige mit der längsten Restlaufzeit. */
+    var beste = daten.lizenzen
+      .filter(function (l) { return TT.lizenzStatus(l).klasse === 'an'; })
+      .sort(function (a, b) {
+        if (!a.expires_at) return -1;          // Lifetime zuerst
+        if (!b.expires_at) return 1;
+        return new Date(b.expires_at) - new Date(a.expires_at);
+      })[0];
+
+    if (schnell) {
+      schnell.innerHTML = beste ? schnellzugriff(beste) : '';
+      schnell.hidden = !beste;
+    }
 
     if (!meine.length) {
       ziel.innerHTML = leerKasten(
@@ -279,6 +298,52 @@
     zielB.innerHTML = letzte
       ? bestellKarte(letzte)
       : leerKasten('Noch keine Bestellung', 'Hier erscheint deine erste Bestellung.', null);
+  }
+
+  /** Der Kasten ganz oben: Schlüssel kopieren und herunterladen, ohne Umweg. */
+  function schnellzugriff(l) {
+    var produkt = daten.produkte[l.product_slug];
+    var name = produkt ? produkt.name : 'Tyler Tweaks App';
+    var darfLaden = produkt && produkt.is_download;
+
+    var restzeile = l.expires_at
+      ? '<li><span class="k">Läuft ab</span><span class="v">' +
+        TT.escape(TT.datum(l.expires_at)) + ' · ' + TT.escape(TT.restzeit(l.expires_at)) +
+        '</span></li>'
+      : '<li><span class="k">Laufzeit</span><span class="v">unbegrenzt gültig</span></li>';
+
+    return '<section class="panel panel-accent schnellzugriff">' +
+      '<div class="bestell-kopf">' +
+        '<div>' +
+          '<span class="bestell-nummer">Einsatzbereit</span>' +
+          '<h2>' + TT.escape(name) + '</h2>' +
+        '</div>' +
+        statusPunkt(TT.lizenzStatus(l)) +
+      '</div>' +
+
+      '<label class="lizenz-label">Dein Lizenz-Key</label>' +
+      '<div class="keyline">' +
+        '<span class="key-text">' + TT.escape(l.key) + '</span>' +
+        '<button type="button" class="key-kopieren" data-key="' + TT.escape(l.key) + '">Key kopieren</button>' +
+      '</div>' +
+
+      '<ul class="speclist">' + restzeile +
+        '<li><span class="k">PC</span><span class="v">' +
+          (l.hwid ? 'gebunden' : 'noch frei — wird beim ersten Start gebunden') + '</span></li>' +
+      '</ul>' +
+
+      (darfLaden
+        ? '<button type="button" class="btn btn-primary btn-block download-knopf" style="margin-top:6px">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 20h16"/></svg>App herunterladen</button>'
+        : '') +
+
+      '<p class="schnell-hinweis">' +
+        'App starten, Schlüssel einfügen, fertig. Den Schlüssel findest du ' +
+        'jederzeit hier wieder.' +
+      '</p>' +
+    '</section>';
   }
 
   /* ---- Produktkarte ---------------------------------------------------- */

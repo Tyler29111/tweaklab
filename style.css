@@ -1944,6 +1944,17 @@ strong { color: var(--text); font-weight: 600; }
 .rechts-fuss p { margin-bottom: .8em; }
 .rechts-fuss p:last-child { margin-bottom: 0; }
 
+/* Schnellzugriff ganz oben im Kundenbereich */
+.schnellzugriff { margin-bottom: 28px; }
+.schnellzugriff h2 { font-size: 1.25rem; margin: 0; }
+.schnellzugriff .keyline { margin-bottom: 16px; }
+.schnellzugriff .speclist { margin-bottom: 18px; }
+.schnell-hinweis {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
 /* Zustimmung zu AGB und Widerruf auf der Kaufseite */
 .zustimmung {
   display: flex;

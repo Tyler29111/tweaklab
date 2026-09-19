@@ -138,20 +138,25 @@
 
   function kennzahlen() {
     var bezahlt = daten.bestellungen.filter(function (b) { return b.payment_status === 'paid'; });
-    var umsatz = bezahlt.reduce(function (s, b) { return s + Number(b.price || 0); }, 0);
+
+    /* Getrennt ausweisen: Was über PayPal hereinkam, ist belegt. Was von Hand
+       eingetragen wurde, hängt davon ab, was du beim Vergeben angegeben hast.
+       Beides in eine Zahl zu werfen, hat zu einem Umsatz geführt, den es nie
+       gab. */
+    var summe = function (liste) {
+      return liste.reduce(function (s, b) { return s + Number(b.price || 0); }, 0);
+    };
+    var ueberPaypal = bezahlt.filter(function (b) { return b.payment_provider === 'paypal'; });
+    var vonHand     = bezahlt.filter(function (b) { return b.payment_provider !== 'paypal'; });
+
     var aktiv = daten.lizenzen.filter(function (l) { return TT.lizenzStatus(l).klasse === 'an'; });
 
-    var heute = new Date(); heute.setHours(0, 0, 0, 0);
-    var heuteBezahlt = bezahlt.filter(function (b) {
-      return b.paid_at && new Date(b.paid_at) >= heute;
-    });
-
     var karten = [
-      { wert: TT.geld(umsatz), label: 'Umsatz gesamt' },
-      { wert: bezahlt.length, label: 'Bezahlte Bestellungen' },
+      { wert: TT.geld(summe(ueberPaypal) + summe(vonHand)), label: 'Umsatz gesamt' },
+      { wert: TT.geld(summe(ueberPaypal)), label: 'davon über PayPal' },
+      { wert: TT.geld(summe(vonHand)), label: 'davon von Hand' },
       { wert: aktiv.length, label: 'Aktive Lizenzen' },
-      { wert: daten.kunden.length, label: 'Kunden' },
-      { wert: heuteBezahlt.length, label: 'Heute bezahlt' }
+      { wert: daten.kunden.length, label: 'Kunden' }
     ];
 
     document.getElementById('kennzahlen').innerHTML = karten.map(function (k) {
@@ -226,6 +231,15 @@
       var slug   = document.getElementById('v-produkt').value;
       var notiz  = document.getElementById('v-notiz').value.trim();
 
+      /* Leer = Produktpreis, 0 = kein Umsatz. Bewusst nicht auf den
+         Produktpreis vorbelegt: Wer testet, soll nicht versehentlich
+         Umsatz buchen. */
+      var betragRoh = document.getElementById('v-betrag').value.trim();
+      var betrag = betragRoh === '' ? null : Number(betragRoh.replace(',', '.'));
+      if (betrag !== null && (!isFinite(betrag) || betrag < 0)) {
+        return TT.melden('vergeben-meldung', 'Der Betrag sieht nicht richtig aus.');
+      }
+
       if (!userId) {
         return TT.melden('vergeben-meldung',
           'Es ist noch kein Kunde registriert. Der Kunde muss sich zuerst auf der Website anmelden.');
@@ -238,7 +252,8 @@
       var erg = await db.rpc('admin_create_license', {
         p_user_id: userId,
         p_product_slug: slug,
-        p_notiz: notiz || null
+        p_notiz: notiz || null,
+        p_betrag: betrag
       });
 
       knopf.disabled = false;
@@ -323,17 +338,63 @@
         '<td>' + TT.escape(b.product_name) + '</td>' +
         '<td>' + TT.escape(TT.geld(b.price, b.currency)) + '</td>' +
         '<td>' + statusPunkt(TT.zahlungStatus(b.payment_status)) + '</td>' +
-        '<td class="mono klein">' + TT.escape(b.paypal_order_id || '—') + '</td>' +
+        '<td class="mono klein">' +
+          (b.payment_provider === 'paypal'
+            ? TT.escape(b.paypal_order_id || '—')
+            : '<span class="merker">von Hand</span>') + '</td>' +
         '<td class="mono klein">' + (lizenz ? TT.escape(lizenz.key) : '<span class="muted">—</span>') + '</td>' +
+        '<td class="aktionen">' +
+          // Nur Handvergaben dürfen weg. Eine echte PayPal-Zahlung zu löschen
+          // würde die Buchhaltung von deinem PayPal-Konto abkoppeln.
+          (b.payment_provider !== 'paypal'
+            ? '<button type="button" class="mini loeschen" data-bestellung="' + TT.escape(b.id) +
+              '" data-nr="' + TT.escape(b.order_no) + '">Löschen</button>'
+            : '<span class="zeile-klein muted">—</span>') +
+        '</td>' +
       '</tr>';
     });
 
     tabelle('t-bestellungen',
-      ['Bestellung', 'Kunde', 'Produkt', 'Preis', 'Zahlung', 'PayPal-Order', 'Lizenz'],
+      ['Bestellung', 'Kunde', 'Produkt', 'Preis', 'Zahlung', 'Herkunft', 'Lizenz', ''],
       zeilen, 'Noch keine Bestellungen.');
   }
 
   document.getElementById('suche-bestellungen').addEventListener('input', bestellungenZeichnen);
+
+  /* ---- Handvergabe wieder entfernen ------------------------------------
+     Für Testeinträge und Fehlgriffe. Löscht Bestellung und zugehörige
+     Lizenz. Echte PayPal-Zahlungen sind davon ausgenommen — die stornierst
+     du bei PayPal, dann setzt der Webhook sie automatisch auf erstattet. */
+  document.addEventListener('click', async function (e) {
+    var knopf = e.target.closest('.mini.loeschen');
+    if (!knopf) return;
+
+    var nr = knopf.dataset.nr;
+    if (!confirm('Bestellung #' + nr + ' wirklich löschen?\n\n' +
+                 'Die zugehörige Lizenz wird mitgelöscht und funktioniert ' +
+                 'danach nicht mehr. Das lässt sich nicht rückgängig machen.')) return;
+
+    knopf.disabled = true;
+    var erg = await db.rpc('admin_delete_manual_order', { p_order_id: knopf.dataset.bestellung });
+    knopf.disabled = false;
+
+    if (erg.error) {
+      console.error('Bestellung löschen:', erg.error);
+      var fehlt = erg.error.code === 'PGRST202' ||
+        /could not find the function/i.test(String(erg.error.message || ''));
+      return TT.melden('meldung',
+        fehlt
+          ? 'Diese Funktion ist noch nicht eingerichtet — führ 04-korrekturen.sql im Supabase-SQL-Editor aus.'
+          : 'Die Bestellung konnte nicht gelöscht werden.', 'error');
+    }
+
+    var d = erg.data || {};
+    await ladeAlles();
+    allesZeichnen();
+    TT.melden('meldung',
+      'Bestellung #' + (d.order_no || nr) + ' gelöscht' +
+      (d.geloeschte_schluessel ? ' (Schlüssel ' + d.geloeschte_schluessel + ')' : '') + '.', 'ok');
+  });
 
   /* ---- Lizenzen -------------------------------------------------------- */
   function lizenzenZeichnen() {
