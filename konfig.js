@@ -85,7 +85,26 @@ window.TT_KONFIG = {
      ----------------------------------------------------------------------- */
   app: {
     version: '2.4.0',
-    datum: '18.09.2026'
+    datum: '18.09.2026',
+
+    /* ---- Setup-Datei ----------------------------------------------------
+       Liegt im Repository unter downloads/ und wird von GitHub Pages
+       ausgeliefert. Der Kundenbereich zeigt den Knopf nur Kunden mit gültiger
+       Lizenz — die Adresse selbst ist aber öffentlich erreichbar.
+
+       Das ist eine bewusste Entscheidung: Der eigentliche Schutz ist der
+       Lizenzschlüssel. Ohne ihn lässt sich die App nicht starten, egal wie
+       jemand an die Datei gekommen ist.
+
+       Willst du später auch die Datei schützen, richte Cloudflare R2 ein
+       (EINRICHTUNG.md, Schritt 9 Variante A). Dann trägst du den Ablageort
+       in app_release.storage_path ein, die Edge Function "download" erzeugt
+       einen Link mit zwei Minuten Gültigkeit — und dieses Feld hier wird
+       automatisch nicht mehr benutzt.
+       --------------------------------------------------------------------- */
+    datei: 'downloads/TylerTweaks-Setup-2.4.0.exe',
+    groesse: '68,8 MB',
+    sha256: '75f8a9ab1bf96da91b5436b5cde8b6a374300e0f65914a46d141973db19d78d2'
   },
 
   /* ---- Änderungen der letzten Versionen ---------------------------------- */

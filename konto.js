@@ -480,7 +480,15 @@
     }
 
     var r = daten.release || {};
-    var groesse = r.size_bytes ? TT.groesse(r.size_bytes) : '';
+    var app = KONFIG.app || {};
+
+    /* Zwei mögliche Quellen für die Datei:
+       1. app_release in Supabase  -> geschützter Link über die Edge Function
+       2. app.datei in konfig.js   -> Datei liegt im Repository
+       Ist (1) eingerichtet, hat sie Vorrang. Sonst greift (2). */
+    var groesse = r.size_bytes ? TT.groesse(r.size_bytes) : (app.groesse || '');
+    var pruefsumme = r.sha256 || app.sha256 || '';
+    var version = r.version || app.version || '—';
 
     ziel.innerHTML =
       '<section class="panel panel-accent">' +
@@ -496,13 +504,15 @@
           'Setup herunterladen</button>' +
         '<p class="download-status" id="download-status" hidden></p>' +
         '<div class="dl-meta">' +
-          '<span>Version <strong>' + TT.escape(r.version || (KONFIG.app && KONFIG.app.version) || '—') + '</strong></span>' +
-          (r.published_at ? '<span>Stand <strong>' + TT.escape(TT.datum(r.published_at)) + '</strong></span>' : '') +
+          '<span>Version <strong>' + TT.escape(version) + '</strong></span>' +
+          '<span>Stand <strong>' +
+            TT.escape(r.published_at ? TT.datum(r.published_at) : (app.datum || '—')) +
+          '</strong></span>' +
           (groesse ? '<span>' + TT.escape(groesse) + '</span>' : '') +
           '<span>Windows 10 / 11 · 64-Bit</span>' +
         '</div>' +
-        (r.sha256
-          ? '<p class="pruefsumme">SHA-256: <code>' + TT.escape(r.sha256) + '</code></p>'
+        (pruefsumme
+          ? '<p class="pruefsumme">SHA-256: <code>' + TT.escape(pruefsumme) + '</code></p>'
           : '') +
       '</section>';
 
@@ -540,7 +550,22 @@
     knopf.disabled = false;
     knopf.innerHTML = alt;
 
-    if (!antwort.ok) {
+    var adresse = null;
+    var dateiname = '';
+
+    if (antwort.ok && antwort.daten && antwort.daten.url) {
+      // Geschützter Link aus dem Speicher, zwei Minuten gültig.
+      adresse = antwort.daten.url;
+      dateiname = antwort.daten.filename || '';
+
+    } else if (antwort.code === 'no_release' && (KONFIG.app || {}).datei) {
+      /* Kein Speicher eingerichtet, aber die Datei liegt im Repository.
+         Den Knopf sieht ohnehin nur, wer eine gültige Lizenz hat — und der
+         eigentliche Schutz ist der Schlüssel, nicht die Adresse der Datei. */
+      adresse = KONFIG.app.datei;
+      dateiname = 'TylerTweaks-Setup-' + ((KONFIG.app || {}).version || '') + '.exe';
+
+    } else {
       if (status) {
         status.textContent = antwort.fehler;
         status.className = 'download-status fehler';
@@ -551,10 +576,9 @@
       return;
     }
 
-    // Der Link ist zwei Minuten gültig und an diese Anfrage gebunden.
     var a = document.createElement('a');
-    a.href = antwort.daten.url;
-    a.download = antwort.daten.filename || '';
+    a.href = adresse;
+    a.download = dateiname;
     a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
