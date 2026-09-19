@@ -77,6 +77,7 @@
 
       <div class="konto-layout">
         <nav class="konto-nav" id="admin-nav" aria-label="Verwaltung">
+          <button type="button" data-ziel="vergeben"><span>Lizenz vergeben</span></button>
           <button type="button" data-ziel="bestellungen" class="an"><span>Bestellungen</span></button>
           <button type="button" data-ziel="lizenzen"><span>Lizenzen</span></button>
           <button type="button" data-ziel="kunden"><span>Kunden</span></button>
@@ -85,6 +86,70 @@
         </nav>
 
         <div class="konto-inhalt">
+
+          <!-- ============ LIZENZ VON HAND VERGEBEN ============ -->
+          <section class="konto-bereich" id="abereich-vergeben" hidden>
+            <h2 class="bereich-titel">Lizenz von Hand vergeben</h2>
+            <p class="bereich-sub">
+              Für Kunden, die außerhalb des automatischen Kaufs bezahlt haben —
+              über paypal.me, per Überweisung oder als Kulanz. Der Schlüssel
+              landet sofort im Konto des Kunden, mit Download.
+            </p>
+
+            <section class="panel">
+              <div class="form-msg" id="vergeben-meldung" role="alert"></div>
+
+              <div class="hinweis-kasten" id="vergeben-nicht-bereit" hidden>
+                <p><strong>Noch nicht eingerichtet.</strong> Führ zuerst
+                   <code>03-lizenz-von-hand.sql</code> im Supabase-SQL-Editor aus.</p>
+              </div>
+
+              <form id="form-vergeben" novalidate>
+                <div class="field">
+                  <label for="v-kunde">Kunde</label>
+                  <select id="v-kunde" class="eingabe-text" required></select>
+                  <p class="hint">
+                    Es erscheinen nur Kunden, die sich auf der Website registriert
+                    haben. Fehlt jemand, muss er erst ein Konto anlegen.
+                  </p>
+                </div>
+
+                <div class="field">
+                  <label for="v-produkt">Paket</label>
+                  <select id="v-produkt" class="eingabe-text" required></select>
+                </div>
+
+                <div class="field">
+                  <label for="v-notiz">Notiz (freiwillig)</label>
+                  <input type="text" id="v-notiz" class="eingabe-text"
+                         placeholder="z. B. per paypal.me bezahlt, 19.09.">
+                  <p class="hint">Nur für dich — der Kunde sieht sie nicht.</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Lizenz erzeugen</button>
+              </form>
+
+              <!-- Ergebnis -->
+              <div id="vergeben-fertig" hidden>
+                <div class="hinweis-kasten ok" style="margin-top:20px">
+                  <p><strong>Erledigt.</strong> Bestellung
+                     <strong id="v-nummer">—</strong> angelegt. Der Kunde sieht
+                     Schlüssel und Download ab sofort in seinem Konto.</p>
+                </div>
+
+                <div id="v-key-bereich" hidden>
+                  <label class="lizenz-label">Lizenz-Key</label>
+                  <div class="keyline">
+                    <span class="key-text" id="v-key">—</span>
+                    <button type="button" class="key-kopieren" id="v-kopieren">Key kopieren</button>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-ghost btn-sm" id="v-nochmal"
+                        style="margin-top:16px">Weitere Lizenz vergeben</button>
+              </div>
+            </section>
+          </section>
 
           <section class="konto-bereich an" id="abereich-bestellungen">
             <div class="bereich-kopf">

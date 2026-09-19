@@ -98,7 +98,7 @@
   /* ====================================================================
      Bereiche
      ==================================================================== */
-  var BEREICHE = ['bestellungen', 'lizenzen', 'kunden', 'zahlungen', 'produkte'];
+  var BEREICHE = ['vergeben', 'bestellungen', 'lizenzen', 'kunden', 'zahlungen', 'produkte'];
 
   document.getElementById('admin-nav').addEventListener('click', function (e) {
     var knopf = e.target.closest('button[data-ziel]');
@@ -128,6 +128,7 @@
      ==================================================================== */
   function allesZeichnen() {
     kennzahlen();
+    vergabeVorbereiten();
     bestellungenZeichnen();
     lizenzenZeichnen();
     kundenZeichnen();
@@ -180,6 +181,126 @@
     el.innerHTML =
       '<thead><tr>' + spalten.map(function (s) { return '<th>' + TT.escape(s) + '</th>'; }).join('') + '</tr></thead>' +
       '<tbody>' + zeilen.join('') + '</tbody>';
+  }
+
+  /* ====================================================================
+     Lizenz von Hand vergeben
+
+     Die eigentliche Arbeit macht admin_create_license() in der Datenbank.
+     Die Funktion prüft dort selbst, ob der Aufrufer Admin ist — diese Seite
+     ist also nur das Formular davor, keine Sicherheitsschranke.
+     ==================================================================== */
+  function vergabeVorbereiten() {
+    var kunden = document.getElementById('v-kunde');
+    var produkte = document.getElementById('v-produkt');
+    if (!kunden || !produkte) return;
+
+    kunden.innerHTML = daten.kunden.length
+      ? daten.kunden.map(function (k) {
+          var anzahl = daten.lizenzen.filter(function (l) { return l.user_id === k.id; }).length;
+          return '<option value="' + TT.escape(k.id) + '">' +
+            TT.escape(k.email || '—') +
+            (k.name ? ' (' + TT.escape(k.name) + ')' : '') +
+            (anzahl ? ' — ' + anzahl + ' Lizenz' + (anzahl === 1 ? '' : 'en') : '') +
+            '</option>';
+        }).join('')
+      : '<option value="">Noch kein Kunde registriert</option>';
+
+    produkte.innerHTML = daten.produkte
+      .filter(function (p) { return p.active; })
+      .map(function (p) {
+        return '<option value="' + TT.escape(p.slug) + '">' +
+          TT.escape(p.name) + ' — ' + TT.escape(TT.geld(p.price, p.currency)) +
+          (p.license_type ? ' (' + TT.escape(TT.laufzeit(p.license_type)) + ')' : ' (ohne Lizenz)') +
+          '</option>';
+      }).join('');
+  }
+
+  var formVergeben = document.getElementById('form-vergeben');
+  if (formVergeben) {
+    formVergeben.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      TT.melden('vergeben-meldung', '');
+
+      var userId = document.getElementById('v-kunde').value;
+      var slug   = document.getElementById('v-produkt').value;
+      var notiz  = document.getElementById('v-notiz').value.trim();
+
+      if (!userId) {
+        return TT.melden('vergeben-meldung',
+          'Es ist noch kein Kunde registriert. Der Kunde muss sich zuerst auf der Website anmelden.');
+      }
+
+      var knopf = formVergeben.querySelector('button[type="submit"]');
+      knopf.disabled = true;
+      knopf.textContent = 'Wird erzeugt …';
+
+      var erg = await db.rpc('admin_create_license', {
+        p_user_id: userId,
+        p_product_slug: slug,
+        p_notiz: notiz || null
+      });
+
+      knopf.disabled = false;
+      knopf.textContent = 'Lizenz erzeugen';
+
+      if (erg.error) {
+        console.error('Lizenz vergeben:', erg.error);
+
+        // Die Funktion gibt es noch nicht -> das SQL fehlt.
+        var fehlt = erg.error.code === 'PGRST202' ||
+          /could not find the function|does not exist/i.test(String(erg.error.message || ''));
+        if (fehlt) {
+          document.getElementById('vergeben-nicht-bereit').hidden = false;
+          return TT.melden('vergeben-meldung',
+            'Diese Funktion ist noch nicht eingerichtet — siehe Hinweis oben.');
+        }
+        if (/not_admin/.test(String(erg.error.message || ''))) {
+          return TT.melden('vergeben-meldung',
+            'Dein Konto hat keine Adminrechte. Setz is_admin in der Tabelle profiles.');
+        }
+        return TT.melden('vergeben-meldung',
+          'Die Lizenz konnte nicht erzeugt werden. Sieh in der Konsole nach dem Grund.');
+      }
+
+      var d = erg.data || {};
+      document.getElementById('v-nummer').textContent = '#' + (d.order_no || '—');
+
+      if (d.license_key) {
+        document.getElementById('v-key').textContent = d.license_key;
+        document.getElementById('v-key-bereich').hidden = false;
+      } else {
+        document.getElementById('v-key-bereich').hidden = true;
+      }
+
+      formVergeben.hidden = true;
+      document.getElementById('vergeben-fertig').hidden = false;
+
+      // Listen auffrischen, damit die neue Lizenz überall auftaucht
+      await ladeAlles();
+      allesZeichnen();
+    });
+  }
+
+  var nochmal = document.getElementById('v-nochmal');
+  if (nochmal) {
+    nochmal.addEventListener('click', function () {
+      document.getElementById('vergeben-fertig').hidden = true;
+      document.getElementById('v-notiz').value = '';
+      formVergeben.hidden = false;
+      TT.melden('vergeben-meldung', '');
+    });
+  }
+
+  var vKopieren = document.getElementById('v-kopieren');
+  if (vKopieren) {
+    vKopieren.addEventListener('click', async function () {
+      var key = document.getElementById('v-key').textContent.trim();
+      if (!key || key === '—') return;
+      var ok = await TT.kopieren(key);
+      vKopieren.textContent = ok ? 'Kopiert ✓' : 'Bitte markieren';
+      setTimeout(function () { vKopieren.textContent = 'Key kopieren'; }, 2200);
+    });
   }
 
   /* ---- Bestellungen ---------------------------------------------------- */

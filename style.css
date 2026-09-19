@@ -1241,6 +1241,32 @@ strong { color: var(--text); font-weight: 600; }
   letter-spacing: normal;
 }
 .field input.eingabe-text::placeholder { letter-spacing: normal; }
+/* Auswahlfelder sehen aus wie Eingabefelder */
+.field select.eingabe-text {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease;
+}
+.field select.eingabe-text:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+/* Die Auswahlliste selbst kommt vom System — dunkel einfärben, sonst
+   erscheint auf manchen Rechnern weiße Schrift auf weißem Grund. */
+.field select.eingabe-text option {
+  background: var(--surface);
+  color: var(--text);
+}
+
 .field input:disabled {
   opacity: .6;
   cursor: not-allowed;
