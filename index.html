@@ -707,7 +707,18 @@
 
     </div>
 
-    <p class="note">
+    <!-- Erscheint nur, solange der automatische Shop noch nicht läuft.
+         Wird von script.js eingeblendet. -->
+    <div class="hinweis-kasten warn wrap-narrow" id="uebergangs-hinweis" hidden
+         style="margin:28px auto 0">
+      <p><strong>Kurzer Hinweis zum Kauf:</strong> Der Lizenzschlüssel wird
+         gerade noch von Hand vergeben. Du bezahlst wie gewohnt über PayPal und
+         schreibst mir danach kurz auf Discord
+         <strong class="discord-name">tyler061312</strong> — dann bekommst du
+         deinen Schlüssel, meist innerhalb weniger Stunden.</p>
+    </div>
+
+    <p class="note" id="preise-note">
       Alle Preise in Euro, inklusive der jeweils geltenden Steuern.
       Für den Kauf brauchst du ein kostenloses Konto — dein Lizenzschlüssel wird nach
       der bestätigten Zahlung automatisch erzeugt und liegt sofort in deinem
@@ -733,8 +744,8 @@
           <span class="art-pick"><i></i><i></i><i></i></span>
         </div>
         <span class="flow-num">1</span>
-        <h3>Konto erstellen</h3>
-        <p>Registrieren, E-Mail bestätigen, fertig. Dauert eine Minute und kostet nichts — dort landen später Lizenz und Download.</p>
+        <h3 data-schritt="1-titel">Konto erstellen</h3>
+        <p data-schritt="1-text">Registrieren, E-Mail bestätigen, fertig. Dauert eine Minute und kostet nichts — dort landen später Lizenz und Download.</p>
       </div>
 
       <div class="flow-step">
@@ -762,8 +773,8 @@
           </span>
         </div>
         <span class="flow-num">3</span>
-        <h3>Schlüssel erscheint automatisch</h3>
-        <p>Sobald PayPal die Zahlung bestätigt, erzeugt das System deinen Lizenzschlüssel und legt ihn in dein Konto. Ohne Nachfragen, ohne Warten.</p>
+        <h3 data-schritt="3-titel">Schlüssel erscheint automatisch</h3>
+        <p data-schritt="3-text">Sobald PayPal die Zahlung bestätigt, erzeugt das System deinen Lizenzschlüssel und legt ihn in dein Konto. Ohne Nachfragen, ohne Warten.</p>
       </div>
 
       <div class="flow-step">
@@ -777,8 +788,8 @@
           </span>
         </div>
         <span class="flow-num">4</span>
-        <h3>Herunterladen &amp; freischalten</h3>
-        <p>Im Kundenbereich lädst du die App herunter, kopierst deinen Schlüssel und gibst ihn beim ersten Start ein. Fertig.</p>
+        <h3 data-schritt="4-titel">Herunterladen &amp; freischalten</h3>
+        <p data-schritt="4-text">Im Kundenbereich lädst du die App herunter, kopierst deinen Schlüssel und gibst ihn beim ersten Start ein. Fertig.</p>
       </div>
 
     </div>

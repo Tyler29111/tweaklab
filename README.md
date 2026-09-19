@@ -26,7 +26,29 @@ Edge Function rechnet ausschließlich damit. Die Zahlen in `konfig.js` sorgen nu
 dafür, dass die Preisliste sofort etwas anzeigt; weichen sie ab, korrigiert die
 Seite sich beim Laden selbst.
 
-## Wie der Kauf abläuft
+## Zwei Kaufwege — die Seite wählt selbst
+
+Die Preisseite prüft beim Laden, ob der automatische Shop bereitsteht. Dafür
+müssen **beide** Bedingungen erfüllt sein:
+
+1. `paypalClientId` in `konfig.js` ist gesetzt
+2. die Tabelle `products` in Supabase ist erreichbar
+
+| Zustand | Was der Kunde sieht |
+|---|---|
+| beides erfüllt | „Für 15 € kaufen“ → `kaufen.html`, Schlüssel entsteht automatisch |
+| noch nicht | „Für 15 € über PayPal zahlen“ → `paypal.me`, Schlüssel per Discord |
+
+Im zweiten Fall blendet die Seite zusätzlich einen Hinweis über den Preisen ein
+und schreibt den Kaufablauf (Schritt 1, 3 und 4) auf den manuellen Weg um —
+sonst würde sie sich selbst widersprechen.
+
+Du musst dafür nichts umstellen. Sobald du die Einrichtung abschließt,
+verschwindet der Rückfall von allein. Willst du ihn gar nicht, setze `paypalMe`
+in `konfig.js` auf einen leeren Text — dann steht dort ehrlich „gerade nicht
+möglich“ statt eines Knopfs ins Leere.
+
+## Wie der Kauf abläuft (nach der Einrichtung)
 
 ```
 Kunde registriert sich          -> Supabase Auth, Bestätigungsmail

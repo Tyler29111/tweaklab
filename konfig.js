@@ -29,11 +29,22 @@ window.TT_KONFIG = {
   /* ---- PayPal -----------------------------------------------------------
      Nur die Client-ID! Das dazugehörige Secret gehört ausschließlich in die
      Supabase-Secrets (siehe EINRICHTUNG.md, Schritt 4).
-
-     Solange dieses Feld leer ist, zeigt die Kaufseite einen deutlichen
-     Hinweis statt eines Buttons, der nicht funktioniert.
      ----------------------------------------------------------------------- */
   paypalClientId: '',
+
+  /* ---- Rückfallebene: paypal.me ----------------------------------------
+     Der einfache Weg, der immer funktioniert — ohne Datenbank, ohne Konto,
+     ohne Einrichtung.
+
+     Er wird AUTOMATISCH benutzt, solange der richtige Shop noch nicht läuft:
+     also wenn die Produkttabelle in Supabase fehlt oder oben keine
+     PayPal-Client-ID steht. Sobald beides da ist, verschwindet er von selbst
+     und der Kauf läuft über den Kundenbereich mit automatischem Schlüssel.
+
+     Auf leer setzen, wenn du diesen Weg gar nicht willst — dann steht bei
+     einem noch nicht eingerichteten Shop ehrlich "gerade nicht möglich".
+     ----------------------------------------------------------------------- */
+  paypalMe: 'https://paypal.me/Tyler971377',
 
   // 'sandbox' zum Testen mit PayPal-Testkonten, 'live' für echtes Geld.
   // Muss zu PAYPAL_ENV in den Supabase-Secrets passen.

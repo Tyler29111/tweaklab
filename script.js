@@ -126,11 +126,51 @@
   var laufzeiten = (KONFIG.laufzeiten || []).slice();
   var gewaehlt = 'app-lifetime';
 
+  /* Läuft der automatische Shop schon? Wird unten aus der Datenbank
+     beantwortet. Bis dahin gehen wir davon aus, dass er läuft — sonst
+     flackert die Seite beim Laden. */
+  var shopLaeuft = true;
+
   function preisFormat(wert) {
     var zahl = Number(wert);
     if (!isFinite(zahl)) return '—';
     // Ganze Beträge ohne Nachkommastellen: "15" statt "15,00"
     return zahl % 1 === 0 ? String(zahl) : zahl.toFixed(2).replace('.', ',');
+  }
+
+  /* paypal.me erwartet den Betrag ohne Komma: 15EUR, 2EUR, 12.50EUR */
+  function paypalMeLink(preis) {
+    var basis = String(KONFIG.paypalMe || '').replace(/\/+$/, '');
+    if (!basis) return null;
+
+    var zahl = Number(preis);
+    if (!isFinite(zahl)) return null;
+
+    var betrag = zahl % 1 === 0 ? String(zahl) : zahl.toFixed(2);
+    return basis + '/' + betrag + 'EUR';
+  }
+
+  /**
+   * Schaltet einen Kaufknopf auf den direkten PayPal-Weg um.
+   *
+   * Das ist der Zustand, den die Seite vor der Umstellung hatte: Er braucht
+   * weder Datenbank noch Konto und funktioniert sofort. Sobald der
+   * automatische Shop steht, wird diese Funktion nie mehr aufgerufen.
+   */
+  function aufPaypalMeUmstellen(knopf, preis, hinweisText) {
+    var link = paypalMeLink(preis);
+    if (!link) return false;
+
+    knopf.href = link;
+    knopf.target = '_blank';
+    knopf.rel = 'noopener';
+    knopf.textContent = 'Für ' + preisFormat(preis) + ' € über PayPal zahlen';
+
+    var karte = knopf.closest('.plan');
+    var alt = karte && karte.querySelector('.plan-alt');
+    if (alt) alt.textContent = hinweisText || 'Zahlung über PayPal · Schlüssel per Discord';
+
+    return true;
   }
 
   function laufzeitZeigen(slug) {
@@ -144,8 +184,14 @@
 
     var knopf = document.getElementById('app-kaufen');
     if (knopf) {
-      knopf.href = 'kaufen.html?produkt=' + encodeURIComponent(slug);
-      knopf.textContent = 'Für ' + preisFormat(eintrag.preis) + ' € kaufen';
+      if (shopLaeuft) {
+        knopf.href = 'kaufen.html?produkt=' + encodeURIComponent(slug);
+        knopf.removeAttribute('target');
+        knopf.textContent = 'Für ' + preisFormat(eintrag.preis) + ' € kaufen';
+      } else {
+        aufPaypalMeUmstellen(knopf, eintrag.preis,
+          'Zahlung über PayPal · Schlüssel per Discord');
+      }
     }
 
     var zeile = document.getElementById('app-lizenz-zeile');
@@ -198,14 +244,82 @@
      beim Kauf. Weicht etwas ab, korrigiert sich die Seite hier selbst,
      damit nirgends ein falscher Preis stehen bleibt.
      ==================================================================== */
+  /**
+   * Schaltet die ganze Preisliste auf den direkten PayPal-Weg um.
+   * Wird aufgerufen, wenn der automatische Shop (noch) nicht bereitsteht.
+   */
+  function aufUebergangUmstellen() {
+    shopLaeuft = false;
+
+    // Tweak-App-Karte: der Knopf hängt an der gewählten Laufzeit
+    laufzeitZeigen(gewaehlt);
+
+    // Bundle und PC-Optimierung
+    document.querySelectorAll('[data-preis]').forEach(function (el) {
+      var eintrag = { bundle: 30, optimierung: 20 }[el.dataset.preis];
+      var karte = el.closest('.plan');
+      var betrag = karte && karte.querySelector('.price .amount');
+      if (betrag) eintrag = Number(betrag.textContent) || eintrag;
+
+      aufPaypalMeUmstellen(el, eintrag,
+        el.dataset.preis === 'optimierung'
+          ? 'Zahlung über PayPal · Termin per Discord'
+          : 'Zahlung über PayPal · Schlüssel und Termin per Discord');
+    });
+
+    var hinweis = document.getElementById('uebergangs-hinweis');
+    if (hinweis) {
+      hinweis.hidden = false;
+      if (window.TT) TT.grundgeruest(); // Discord-Name einsetzen
+    }
+
+    var note = document.getElementById('preise-note');
+    if (note) {
+      note.innerHTML = 'Alle Preise in Euro, inklusive der jeweils geltenden Steuern. ' +
+        'Es gelten die <a href="agb.html">AGB</a> und die ' +
+        '<a href="widerruf.html">Widerrufsbelehrung</a>.';
+    }
+
+    /* Der Kaufablauf weiter unten beschreibt den automatischen Weg. Solange
+       der nicht läuft, würde die Seite sich selbst widersprechen: oben steht
+       "Schlüssel per Discord", unten "erscheint automatisch". Also auch hier
+       sagen, was wirklich passiert. */
+    var schritte = {
+      '1-titel': 'Paket auswählen',
+      '1-text':  'Du entscheidest dich für eine Laufzeit, die Optimierung oder beides im Bundle.',
+      '3-titel': 'Schlüssel anfordern',
+      '3-text':  'Nach der Zahlung schreibst du mir kurz auf Discord und nennst den Namen, ' +
+                 'unter dem du bezahlt hast. Ich gleiche die Zahlung ab und schicke dir den Schlüssel.',
+      '4-titel': 'Herunterladen & freischalten',
+      '4-text':  'Du bekommst den Download-Link zusammen mit deinem Schlüssel. ' +
+                 'Beim ersten Start der App gibst du ihn ein — fertig.'
+    };
+
+    Object.keys(schritte).forEach(function (k) {
+      var el = document.querySelector('[data-schritt="' + k + '"]');
+      if (el) el.textContent = schritte[k];
+    });
+  }
+
   (async function preiseAbgleichen() {
-    if (!window.TT || !TT.db) return;
+    // Ohne PayPal-Client-ID kann die Kaufseite keine Zahlung entgegennehmen —
+    // dann hilft auch eine funktionierende Datenbank nichts.
+    if (!String(KONFIG.paypalClientId || '').trim()) {
+      return aufUebergangUmstellen();
+    }
+
+    if (!window.TT || !TT.db) return aufUebergangUmstellen();
 
     var erg = await TT.db.from('products')
       .select('slug, price, active')
       .eq('active', true);
 
-    if (erg.error || !erg.data) return; // Anzeige aus konfig.js bleibt stehen
+    // Datenbank nicht erreichbar (z. B. Tabellen noch nicht angelegt):
+    // lieber der alte, funktionierende Weg als ein Knopf ins Leere.
+    if (erg.error || !erg.data) {
+      console.warn('Shop nicht bereit, Rückfall auf paypal.me:', erg.error);
+      return aufUebergangUmstellen();
+    }
 
     var ausDb = {};
     erg.data.forEach(function (p) { ausDb[p.slug] = p.price; });
