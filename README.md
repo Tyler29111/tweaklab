@@ -171,6 +171,34 @@ sofortigen Beginn; ohne die erlischt das Widerrufsrecht nicht vorzeitig. Bei
 der PC-Optimierung wird dieser Zusatz automatisch ausgeblendet, weil er dort
 nicht zutrifft.
 
+## Setup-Datei
+
+`downloads/TylerTweaks-Setup-2.4.0.exe` (68,8 MB) liegt im Repository und wird
+von GitHub Pages ausgeliefert. Supabase Storage schied aus: 50 MB Grenze im
+kostenlosen Tarif.
+
+**Die Adresse der Datei ist damit öffentlich.** Das ist eine bewusste
+Abwägung — der eigentliche Schutz ist der Lizenzschlüssel, ohne den die App
+nicht startet. Der Kundenbereich zeigt den Knopf weiterhin nur Kunden mit
+gültiger Lizenz.
+
+Der Kundenbereich holt den Download in zwei Stufen:
+
+1. Edge Function `download` → geschützter Link, zwei Minuten gültig
+2. fällt sie mit `no_release` aus → die Datei aus `konfig.js`
+
+Richtest du später Cloudflare R2 ein und trägst `app_release.storage_path`
+ein, greift automatisch wieder Stufe 1 — dann kann die Datei aus dem
+Repository verschwinden.
+
+**Neue Version veröffentlichen:** Datei nach `downloads/` legen, in `konfig.js`
+unter `app` Version, Datum, Dateiname, Größe und Prüfsumme anpassen. Die
+Prüfsumme bekommst du mit:
+
+```powershell
+Get-FileHash "downloads\TylerTweaks-Setup-2.4.0.exe" -Algorithm SHA256
+```
+
 ## Offen
 
 Alle vier Rechtsseiten sind **fertig gebaut, aber noch mit Platzhaltern** —
